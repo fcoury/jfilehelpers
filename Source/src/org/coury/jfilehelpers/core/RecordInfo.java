@@ -97,6 +97,21 @@ public final class RecordInfo<T> {
 //        }
 	}
 	
+	public String recordToStr(T record) throws IllegalArgumentException, IllegalAccessException {
+		StringBuffer sb = new StringBuffer(this.sizeHint);
+		
+		Object[] values = new Object[fieldCount];
+		for (int i = 0; i < fieldCount; i++) {
+			values[i] = fields[i].getFieldInfo().get(record);
+		}
+
+		for (int i = 0; i < fieldCount; i++) {
+			fields[i].assignToString(sb, values[i]);
+		}
+		
+		return sb.toString();
+	}
+	
 	private T createRecordObject() throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
 			return recordConstructor.newInstance();

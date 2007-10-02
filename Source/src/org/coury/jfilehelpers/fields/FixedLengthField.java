@@ -6,6 +6,7 @@ import org.coury.jfilehelpers.core.ExtractedInfo;
 import org.coury.jfilehelpers.engines.LineInfo;
 import org.coury.jfilehelpers.enums.AlignMode;
 import org.coury.jfilehelpers.enums.FixedMode;
+import org.coury.jfilehelpers.helpers.StringHelper;
 
 public class FixedLengthField extends FieldBase {
 
@@ -65,6 +66,7 @@ public class FixedLengthField extends FieldBase {
 	@Override
 	protected void createFieldString(StringBuffer sb, Object fieldValue) {
 		String field = super.baseFieldString(fieldValue);
+		field = StringHelper.trimBoth(field, StringHelper.WHITESPACE_CHARS);
 
 		if (field.length() > fieldLength) {
 			field = field.substring(0, fieldLength);

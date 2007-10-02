@@ -21,6 +21,6 @@ public class TestFixed {
 		for (Customer c : customers) {
 			System.out.println(c);
 		}
-		//engine.writeFile("customers-out.txt");
+		engine.writeFile("customers-fixed-out.txt", customers);
 	}
 }
