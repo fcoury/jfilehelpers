@@ -1,3 +1,23 @@
+/*
+ * RecordInfo.java
+ *
+ * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
+
 package org.coury.jfilehelpers.core;
 
 import java.lang.reflect.Constructor;
@@ -19,6 +39,13 @@ import org.coury.jfilehelpers.fields.FixedLengthField;
 import org.coury.jfilehelpers.helpers.ConditionHelper;
 import org.coury.jfilehelpers.helpers.StringHelper;
 
+/**
+ * Information about one record of information. Keep field types and its values
+ * and settings for importing/exporting from this records.
+ *  
+ * @author Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * @param <T> Type of the record
+ */
 public final class RecordInfo<T> {
 	private FieldBase[] fields;
 	private Class<T> recordClass;
@@ -49,6 +76,12 @@ public final class RecordInfo<T> {
 		initFields();
 	}
 	
+	/**
+	 * Parses a text line into a record object
+	 * 
+	 * @param line current text line extracted from file 
+	 * @return parsed object
+	 */
 	public T strToRecord(LineInfo line) {
 		if (mustIgnoreLine(line.getLineStr())) {
 			return null;
@@ -65,6 +98,7 @@ public final class RecordInfo<T> {
 	
 			record = createRecordObject();
 			for (int i = 0; i < fieldCount; i++) {
+				// sets the field on the object
 				Field f = record.getClass().getField(fields[i].getFieldInfo().getName());
 				f.set(record, values[i]);
 				// fields[i].getFieldInfo().set(record, values[i]);
@@ -97,6 +131,14 @@ public final class RecordInfo<T> {
 //        }
 	}
 	
+	/**
+	 * Creates a string representation of the record object
+	 * 
+	 * @param record the record object
+	 * @return string representation of the record object, respecting rules defined
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
 	public String recordToStr(T record) throws IllegalArgumentException, IllegalAccessException {
 		StringBuffer sb = new StringBuffer(this.sizeHint);
 		
@@ -112,6 +154,14 @@ public final class RecordInfo<T> {
 		return sb.toString();
 	}
 	
+	/**
+	 * Instantiates a new object of the record class type
+	 * @return the newly instatiated object
+	 * @throws IllegalArgumentException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 */
 	private T createRecordObject() throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
 		try {
 			return recordConstructor.newInstance();
@@ -122,6 +172,12 @@ public final class RecordInfo<T> {
 		}
 	}
 		
+	/**
+	 * Verifies if current line should be ignored
+	 * 
+	 * @param line line to be examined
+	 * @return true or false indicating if passed line should be ignored
+	 */
 	private boolean mustIgnoreLine(String line) {
 		if (ignoreEmptyLines) {
 			if ((ignoreEmptySpaces && line.trim().length() == 0) || line.length() == 0) {
@@ -171,6 +227,10 @@ public final class RecordInfo<T> {
 		return false;
 	}
 
+	/**
+	 * Initiate the values of member fields by looking for annotations on the
+	 * record object that changes behavior
+	 */
 	@SuppressWarnings("unchecked")
 	private void initFields() {
 		IgnoreFirst igf = recordClass.getAnnotation(IgnoreFirst.class);
@@ -242,10 +302,21 @@ public final class RecordInfo<T> {
 		}
 	}
 
+	/**
+	 * Indicates if this record is of fixed length
+	 * @return true if record is fixed length, false otherwise
+	 */
 	private boolean isFixedLength() {
 		return recordClass.isAnnotationPresent(FixedLengthRecord.class);
 	}
 	
+	/**
+	 * Creates field descriptors for each field of the record class 
+	 * 
+	 * @param fields current fields of the record class, acquired via reflection
+	 * @param recordClass the record class
+	 * @return an array of FieldBase, field descriptor objects
+	 */
 	@SuppressWarnings("unchecked")
 	private static FieldBase[] createCoreFields(Field[] fields, Class recordClass) {
 		FieldBase field;
@@ -271,6 +342,9 @@ public final class RecordInfo<T> {
 		return fieldArr.toArray(new FieldBase[] {});
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	public String toString() {
 		return StringHelper.toStringBuilder(this);
 	}
