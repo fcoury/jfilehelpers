@@ -81,7 +81,7 @@ public abstract class FieldBase {
 	              " (this is not allowed when you use [FieldInNewLine])");
 			}
 
-			line.reload(line.readLine());
+			line.reload(line.getReader().readNextLine());
 				
 			if (line.getLineStr() == null) {
 //				throw new BadUsageException("End of stream found parsing the field " + fieldInfo.getName() +

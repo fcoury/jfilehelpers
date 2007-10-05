@@ -122,7 +122,7 @@ public class StringHelper {
 							"The current field has an UnClosed quoted string. Complete line: " + res.toString());
 				}
 
-				line.readLine();
+				line.readNextLine();
 				res.append(StringHelper.NEW_LINE);
 				//lines++;
 				i = 0;

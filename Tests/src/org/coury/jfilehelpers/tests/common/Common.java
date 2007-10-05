@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.coury.jfilehelpers.engines.FileHelperEngine;
+import org.coury.jfilehelpers.masterdetail.MasterDetailEngine;
 
 public class Common {
 	public static Object readTest(FileHelperEngine<? extends Object> engine, String fileName) throws IOException {
@@ -32,5 +33,9 @@ public class Common {
 
 	public static boolean assertSameDate(Date d1, Date d2) {
 		return d1.equals(d2);
+	}
+
+	public static Object readTest(MasterDetailEngine<? extends Object, ? extends Object> engine, String fileName) throws IOException {
+		return engine.readResource("/test/" + fileName);
 	}
 }
