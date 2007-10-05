@@ -20,10 +20,10 @@
 
 package org.coury.jfilehelpers.engines;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.helpers.StringHelper;
 
 public final class LineInfo {
@@ -34,7 +34,7 @@ public final class LineInfo {
 	private int currentPos = 0;
 	private int lineNumber;
 	
-	private BufferedReader reader;
+	private ForwardReader reader;
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
@@ -116,14 +116,14 @@ public final class LineInfo {
 		return lineStr.substring(pos, str.length()).equalsIgnoreCase(str);
 	}
 	
-	public String readLine() throws IOException {
-		String str = reader.readLine();
-		lineNumber++;
-		return str;
-	}
+//	public String readLine() throws IOException {
+//		String str = reader.readNextLine();
+//		lineNumber++;
+//		return str;
+//	}
 	
 	public void readNextLine() throws IOException {
-		lineStr = readLine();
+		lineStr = reader.readNextLine();
 		line = lineStr.toCharArray();
 		
 		currentPos = 0;
@@ -133,7 +133,7 @@ public final class LineInfo {
 		return new String(line, currentPos, line.length - currentPos);
 	}
 
-	public void setReader(BufferedReader reader) {
+	public void setReader(ForwardReader reader) {
 		this.reader = reader;
 	}
 	
@@ -173,5 +173,12 @@ public final class LineInfo {
 
 	public int getLineNumber() {
 		return lineNumber;
+	}
+
+	/**
+	 * @return the reader
+	 */
+	public ForwardReader getReader() {
+		return reader;
 	}
 }

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.helpers.StringHelper;
 
 public class FileHelperEngine<T> extends EngineBase<T> {
@@ -197,6 +198,9 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		String currentLine;
 		String completeLine;
 		
+		ForwardReader freader = new ForwardReader(reader, recordInfo.getIgnoreLast());
+		freader.setDiscardForward(true);
+		
 		setLineNumber(1);
 		completeLine = reader.readLine();
 		currentLine = completeLine;
@@ -218,7 +222,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		}
 		
 		LineInfo line = new LineInfo(currentLine);
-		line.setReader(reader);
+		line.setReader(freader);
 
 		while (currentLine != null && currentRecord < maxRecords) {
 			totalRecords++;
