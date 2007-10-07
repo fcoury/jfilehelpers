@@ -202,7 +202,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		freader.setDiscardForward(true);
 		
 		setLineNumber(1);
-		completeLine = reader.readLine();
+		completeLine = freader.readNextLine();
 		currentLine = completeLine;
 		
 		//ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, -1);
@@ -210,7 +210,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		if (recordInfo.getIgnoreFirst() > 0) {
 			for (int i = 0; i < recordInfo.getIgnoreFirst() && currentLine != null; i++) {
 				headerText += currentLine + StringHelper.NEW_LINE;
-				currentLine = reader.readLine();
+				currentLine = freader.readNextLine();
 				lineNumber++;
 			}
 		}
@@ -245,7 +245,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 				}
 			}
 			
-			currentLine = reader.readLine();
+			currentLine = freader.readNextLine();
 		}		
 		
 		return resArray;
