@@ -1,0 +1,3 @@
+This intends to be a documentation of differences in behavior from C# version and this Java port:
+
+1) On C# version, the enum conversion is not case sensitive, but in Java it is. Check EnumConverterTest.java for more information.
