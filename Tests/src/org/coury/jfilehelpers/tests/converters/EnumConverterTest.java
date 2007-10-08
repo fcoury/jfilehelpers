@@ -34,6 +34,10 @@ import org.coury.jfilehelpers.tests.converters.testobjects.EnumType2;
 public class EnumConverterTest extends TestCase {
 	@SuppressWarnings("unchecked")
 	FileHelperEngine engine;
+	
+	public static void main(String[] args) {
+		System.out.println(Enum2.One.toString());
+	}
     
 	@SuppressWarnings("unchecked")
 	public void testEnumSingleCase() throws IOException {
@@ -44,10 +48,15 @@ public class EnumConverterTest extends TestCase {
 		assertEquals(5, res.size());
 
 		assertEquals(Enum2.One, res.get(0).enumValue);
-		assertEquals(Enum2.One, res.get(1).enumValue);
 		assertEquals(Enum2.Two, res.get(2).enumValue);
 		assertEquals(Enum2.Three, res.get(3).enumValue);
 		assertEquals(Enum2.Three, res.get(4).enumValue);
+
+		// This behavior differs from original, C# version
+		// on C# the conversion from a string is not case sensitive.
+		// In Java version, it is case sensitive and the value 
+		// here "one" does not map to Enum2.One
+		assertNull(res.get(1).enumValue);
 	}
 
 }

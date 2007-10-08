@@ -203,6 +203,7 @@ public abstract class FieldBase {
         return val;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Object changeType(String s, Field fieldInfo) {
 		if (fieldInfo.getType().getName().equals("int")) {
 			return Integer.parseInt(s);
@@ -214,6 +215,14 @@ public abstract class FieldBase {
 			return Float.parseFloat(s);
 		}
 		if (fieldInfo.getType().isEnum()) {
+			Object ret = null;
+			try {
+				System.out.println(s);
+				ret = Enum.valueOf((Class<Enum>) fieldInfo.getType(), s); 
+			}
+			catch (IllegalArgumentException e) {
+			}
+			return ret;
 		}
 		return s.getClass().cast(fieldInfo.getType());
 	}
