@@ -1,7 +1,7 @@
 /*
  * RecordInfo.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -38,12 +38,14 @@ import org.coury.jfilehelpers.fields.FieldFactory;
 import org.coury.jfilehelpers.fields.FixedLengthField;
 import org.coury.jfilehelpers.helpers.ConditionHelper;
 import org.coury.jfilehelpers.helpers.StringHelper;
+import org.coury.jfilehelpers.interfaces.NotifyRead;
+import org.coury.jfilehelpers.interfaces.NotifyWrite;
 
 /**
  * Information about one record of information. Keep field types and its values
  * and settings for importing/exporting from this records.
  *  
- * @author Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * @author Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * @param <T> Type of the record
  */
 public final class RecordInfo<T> {
@@ -60,8 +62,8 @@ public final class RecordInfo<T> {
 	private RecordCondition recordCondition = RecordCondition.None;
 	private String recordConditionSelector = "";
 
-	private boolean notifyRead;
-	private boolean notifyWrite;
+	private boolean notifyRead = false;
+	private boolean notifyWrite = false;
 	private String conditionRegEx = null;
 	
 	private int sizeHint = 32;
@@ -253,15 +255,12 @@ public final class RecordInfo<T> {
 		
 		// TODO ConditionalRecord
 
-		/*
-		// TODO Notifications
-		if (typeof(INotifyRead).IsAssignableFrom(mRecordType))
-			mNotifyRead = true;
+		if(NotifyRead.class.isAssignableFrom(recordClass))
+			notifyRead = true;
 
-		if (typeof(INotifyWrite).IsAssignableFrom(mRecordType))
-			mNotifyWrite = true;
-		*/
-
+		if(NotifyWrite.class.isAssignableFrom(recordClass))
+			notifyWrite = true;
+		
 		try {
 			recordConstructor = (Constructor<T>) recordClass.getConstructor();
 		} catch (SecurityException e) {

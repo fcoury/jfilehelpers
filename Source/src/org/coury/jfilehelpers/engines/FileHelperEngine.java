@@ -34,6 +34,8 @@ import java.util.List;
 
 import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.helpers.StringHelper;
+import org.coury.jfilehelpers.interfaces.NotifyRead;
+import org.coury.jfilehelpers.interfaces.NotifyWrite;
 import org.coury.jfilehelpers.events.*;
 
 public class FileHelperEngine<T> extends EngineBase<T> {
@@ -284,10 +286,11 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean onAfterReadRecord(String line, T record) {
-		//if (mRecordInfo.mNotifyRead)
-		//	((INotifyRead)record).AfterRead(this, line);
-
+		if(recordInfo.isNotifyRead()) {
+			((NotifyRead<T>) record).afterRead(this,line);
+		}
 	    if(afterReadRecordHandler != null) {
 			AfterReadRecordEventArgs<T> e = new AfterReadRecordEventArgs<T>(line, record, lineNumber);
 			afterReadRecordHandler.handleAfterReadRecord(this, e);
@@ -296,17 +299,16 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	private boolean onBeforeWriteRecord(T record) {
-		//if (mRecordInfo.mNotifyWrite)
-		//	((INotifyWrite)record).BeforeWrite(this);
-
+		if(recordInfo.isNotifyWrite()) {
+			((NotifyWrite<T>) record).beforeWrite(this);
+		}
 	    if (beforeWriteRecordHandler != null) {
 			BeforeWriteRecordEventArgs<T> e = new BeforeWriteRecordEventArgs<T>(record, lineNumber);
 			beforeWriteRecordHandler.handleBeforeWriteRecord(this, e);
-
 			return e.getSkipThisRecord();
 		}
-
 		return false;
 	}
 
