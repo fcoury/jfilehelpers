@@ -24,7 +24,7 @@ package org.coury.jfilehelpers.events;
  * @author Robert Eccardt
  *
  */
-public class BeforeReadRecordEventArgs extends ReadRecordEventArgs {
+public class BeforeReadRecordEventArgs<T> extends ReadRecordEventArgs {
 	private boolean skipThisRecord = false;
 
 	public BeforeReadRecordEventArgs(String recordLine, int lineNumber) {
