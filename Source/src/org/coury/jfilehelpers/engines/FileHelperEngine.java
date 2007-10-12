@@ -1,7 +1,7 @@
 /*
  * FileHelperEngine.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,9 +34,15 @@ import java.util.List;
 
 import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.helpers.StringHelper;
+import org.coury.jfilehelpers.events.*;
 
 public class FileHelperEngine<T> extends EngineBase<T> {
-	
+
+	private BeforeReadRecordHandler<T> beforeReadRecordHandler;
+	private AfterReadRecordHandler<T> afterReadRecordHandler;
+	private BeforeWriteRecordHandler<T> beforeWriteRecordHandler;
+	private AfterWriteRecordHandler<T> afterWriteRecordHandler;
+
 	public FileHelperEngine(Class<T> recordClass) {
 		super(recordClass);
 	}
@@ -108,14 +114,13 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 					}
 					
 					boolean skip = false;
-					// TODO progress and call back
+					// TODO progress
 					// ProgressHelper.Notify(mNotifyHandler, mProgressMode, recIndex+1, max);
-					// skip = OnBeforeWriteRecord(rec);
+					skip = onBeforeWriteRecord(rec);
 					
 					if (!skip) {
 						currentLine = recordInfo.recordToStr(rec);
-						// TODO call back
-						// currentLine = OnAfterWriteRecord(currentLine, rec);
+						currentLine = onAfterWriteRecord(currentLine, rec);
 						writer.write(currentLine + StringHelper.NEW_LINE);
 					}
 					
@@ -233,23 +238,84 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 			boolean skip = false;
 			
 			//ProgressHelper.Notify(mNotifyHandler, mProgressMode, currentRecord, -1);
-			//skip = OnBeforeReadRecord(currentLine);
-			
+			BeforeReadRecordEventArgs<T> e = new BeforeReadRecordEventArgs<T>(currentLine, lineNumber);
+			skip = onBeforeReadRecord(e);
+			if (e.getRecordLineChanged()) {
+				line.reload(e.getRecordLine());
+			}
 			if (!skip) {
 				T record = recordInfo.strToRecord(line);
 
-				// skip = OnAfterReadRecord(currentLine, (T) record);
-										
+				skip = onAfterReadRecord(currentLine, record);
 				if (skip == false && record != null) {
 					resArray.add(record);
 				}
 			}
 			
 			currentLine = freader.readNextLine();
+            completeLine = currentLine;
+            lineNumber++;
 		}		
 		
 		return resArray;
 	}
-	
-	
+
+	public void setBeforeReadRecordHandler(BeforeReadRecordHandler<T> beforeReadRecordHandler) {
+		this.beforeReadRecordHandler = beforeReadRecordHandler;
+	}
+
+	public void setAfterReadRecordHandler(AfterReadRecordHandler<T> afterReadRecordHandler) {
+		this.afterReadRecordHandler = afterReadRecordHandler;
+	}
+
+	public void setBeforeWriteRecordHandler(BeforeWriteRecordHandler<T> beforeWriteRecordHandler) {
+		this.beforeWriteRecordHandler = beforeWriteRecordHandler;
+	}
+
+	public void setAfterWriteRecordHandler(AfterWriteRecordHandler<T> afterWriteRecordHandler) {
+		this.afterWriteRecordHandler = afterWriteRecordHandler;
+	}
+
+	private boolean onBeforeReadRecord(BeforeReadRecordEventArgs<T> e) {
+		if (beforeReadRecordHandler != null) {
+			beforeReadRecordHandler.handleBeforeReadRecord(this, e);
+			return e.getSkipThisRecord();
+		}
+		return false;
+	}
+
+	private boolean onAfterReadRecord(String line, T record) {
+		//if (mRecordInfo.mNotifyRead)
+		//	((INotifyRead)record).AfterRead(this, line);
+
+	    if(afterReadRecordHandler != null) {
+			AfterReadRecordEventArgs<T> e = new AfterReadRecordEventArgs<T>(line, record, lineNumber);
+			afterReadRecordHandler.handleAfterReadRecord(this, e);
+			return e.getSkipThisRecord();
+		}
+		return false;
+	}
+
+	private boolean onBeforeWriteRecord(T record) {
+		//if (mRecordInfo.mNotifyWrite)
+		//	((INotifyWrite)record).BeforeWrite(this);
+
+	    if (beforeWriteRecordHandler != null) {
+			BeforeWriteRecordEventArgs<T> e = new BeforeWriteRecordEventArgs<T>(record, lineNumber);
+			beforeWriteRecordHandler.handleBeforeWriteRecord(this, e);
+
+			return e.getSkipThisRecord();
+		}
+
+		return false;
+	}
+
+	private String onAfterWriteRecord(String line, T record) {
+		if(afterWriteRecordHandler != null) {
+            AfterWriteRecordEventArgs<T> e = new AfterWriteRecordEventArgs<T>(record, lineNumber, line);
+            afterWriteRecordHandler.handleAfterWriteRecord(this, e);
+			return e.getRecordLine();
+		}
+		return line;
+	}
 }
