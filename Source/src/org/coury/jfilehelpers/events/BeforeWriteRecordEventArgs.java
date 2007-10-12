@@ -1,5 +1,5 @@
 /*
- * BeforeReadRecord.java
+ * BeforeWriteRecordEventArgs.java
  *
  * Copyright (C) 2007 Felipe Gon�alves Coury <felipe.coury@gmail.com>
  * 
