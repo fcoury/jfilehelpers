@@ -1,7 +1,7 @@
 /*
  * AllTests.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,8 @@
  */
 package org.coury.jfilehelpers.tests;
 
+import org.coury.jfilehelpers.tests.callbacks.EventsTest;
+import org.coury.jfilehelpers.tests.callbacks.NotifiersTest;
 import org.coury.jfilehelpers.tests.converters.DateFormatTest;
 import org.coury.jfilehelpers.tests.converters.DecimalNumbersTest;
 import org.coury.jfilehelpers.tests.converters.EnumConverterTest;
@@ -37,6 +39,8 @@ public class AllTests {
 		suite.addTestSuite(DateFormatTest.class);
 		suite.addTestSuite(DecimalNumbersTest.class);
 		suite.addTestSuite(MasterDetailTest.class);
+		suite.addTestSuite(NotifiersTest.class);
+		suite.addTestSuite(EventsTest.class);
 		//$JUnit-END$
 		return suite;
 	}
