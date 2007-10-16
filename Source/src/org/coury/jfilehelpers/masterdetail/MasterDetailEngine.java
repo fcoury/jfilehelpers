@@ -20,10 +20,13 @@
 package org.coury.jfilehelpers.masterdetail;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,14 @@ import org.coury.jfilehelpers.engines.EngineBase;
 import org.coury.jfilehelpers.engines.LineInfo;
 import org.coury.jfilehelpers.helpers.StringHelper;
 
+/**
+ * Handles flat files with master-detail information
+ * 
+ * @author Felipe G. Coury <felipe.coury@gmail.com>
+ *
+ * @param <MT> Master Type
+ * @param <DT> Detail Type
+ */
 public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 
 	@SuppressWarnings("unused")
@@ -96,6 +107,97 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		return tempRes;
 	}
 
+	public void writeFile(String fileName, List<MasterDetails<MT, DT>> records) throws IOException {
+		writeFile(fileName, records, -1);
+	}
+	
+	public void writeFile(String fileName, List<MasterDetails<MT, DT>> records, int maxRecords) throws IOException {
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(new File(fileName));
+			//fw.write("ABCDEF\n");
+			writeStream(fw, records, maxRecords);
+		}
+		finally {
+			if (fw != null) {
+				fw.flush();
+				fw.close();
+			}
+		}
+	}
+	
+	private void writeStream(OutputStreamWriter osr, List<MasterDetails<MT, DT>> records, int maxRecords) throws IOException {
+		BufferedWriter writer = new BufferedWriter(osr);
+		
+		resetFields();
+		if (getHeaderText() != null && getHeaderText().length() != 0) {
+			writer.write(getHeaderText());
+			if (!getHeaderText().endsWith(StringHelper.NEW_LINE)) {
+				writer.write(StringHelper.NEW_LINE);
+			}
+		}
+
+		String currentLine = null;
+
+		int max = records.size();
+
+		if (maxRecords >= 0) {
+			max = Math.min(max, maxRecords);
+		}
+
+		// TODO progress
+		// ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, max);
+
+		for (int i = 0; i < max; i++) {
+			try {
+				if (records.get(i) == null) {
+					throw new IllegalArgumentException("The record at index " + i + " is null.");
+				}
+				
+				// TODO progress
+				// ProgressHelper.Notify(mNotifyHandler, mProgressMode, i+1, max);
+
+				currentLine = masterInfo.recordToStr(records.get(i).getMaster());
+				writer.write(currentLine + StringHelper.NEW_LINE);
+
+				if (records.get(i).getDetails() != null) { 
+					for (int d = 0; d < records.get(i).getDetails().size(); d++) {
+						currentLine = recordInfo.recordToStr(records.get(i).getDetails().get(d));
+						writer.write(currentLine + StringHelper.NEW_LINE);
+					}
+				}
+			}
+			catch (Exception ex) {
+				ex.printStackTrace();
+				// TODO error manager
+//				switch (mErrorManager.ErrorMode)
+//				{
+//					case ErrorMode.ThrowException:
+//						throw;
+//					case ErrorMode.IgnoreAndContinue:
+//						break;
+//					case ErrorMode.SaveAndContinue:
+//						ErrorInfo err = new ErrorInfo();
+//						err.mLineNumber = mLineNumber;
+//						err.mExceptionInfo = ex;
+////						err.mColumnNumber = mColumnNum;
+//						err.mRecordString = currentLine;
+//						mErrorManager.AddError(err);
+//						break;
+//				}
+			}
+		}
+
+		totalRecords = records.size();
+
+		if (getFooterText() != null && getFooterText() != "") {
+			writer.write(getFooterText());
+			if (!getFooterText().endsWith(StringHelper.NEW_LINE)) {
+				writer.write(StringHelper.NEW_LINE);
+			}
+		}		
+	}
+		
 	@SuppressWarnings("unchecked")
 	private List<MasterDetails<MT, DT>> readStream(InputStreamReader fileReader) throws IOException {
 		BufferedReader reader = new BufferedReader(fileReader);
