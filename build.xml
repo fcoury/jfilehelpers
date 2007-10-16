@@ -1,0 +1,41 @@
+<project name="JFileHelpers" basedir="." default="junit">
+	
+	<property name="version" value="0.1a" />
+	<property name="dist" value="${basedir}/dist" />
+	<property name="build" value="${basedir}/bin" />
+	
+	<tstamp>
+		<format property="TODAY" pattern="yyyyMMdd"/>
+	</tstamp>
+	
+	<target name="init">
+		<mkdir dir="${dist}" />
+	</target>	
+	
+	<target name="jars" depends="init">
+		<jar destfile="${dist}/jfilehelpers-${version}-${TODAY}.jar">
+			<manifest>
+			</manifest>
+			<fileset dir="bin" includes="**/*.class" />
+			<fileset dir="resources" />
+		</jar>
+	</target>
+	
+	<target name="junit" depends="jars">
+	    <junit printsummary="on" fork="false">
+	      <formatter type="brief" />
+	      <classpath path="${dist}/jfilehelpers-${version}-${TODAY}.jar" />
+	      <batchtest>
+	        <fileset  dir="${build}">
+	          <include name="org/coury/jfilehelpers/tests/**/*Test.class" />
+	        </fileset>
+	      </batchtest>
+	    </junit>
+
+	    <junitreport>
+	      <fileset dir=".">
+	        <include name="TEST-*.log"/>
+	      </fileset>
+	    </junitreport>
+	</target>
+</project>
