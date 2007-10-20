@@ -34,7 +34,7 @@ import junit.framework.TestCase;
  * @author Robert Eccardt
  *
  */
-public class CallbacksBase extends TestCase {
+public abstract class CallbacksBase extends TestCase {
 	static FileHelperEngine<Customer> engine;
 	static final String customerFile = "customers_for_callbacks.txt";
 	static List<Customer> customers;
@@ -46,6 +46,7 @@ public class CallbacksBase extends TestCase {
 	static int afterWriteCount;
 	static String eventLine;
 	static String notifyLine;
+	@Override
 	protected void setUp() {
 		engine = new FileHelperEngine<Customer>(Customer.class);
 		customers = new ArrayList<Customer>();
@@ -65,6 +66,7 @@ public class CallbacksBase extends TestCase {
 		c.rating = 2;
 		customers.add(c);	
 	}
+	@Override
 	protected void tearDown() {
 		new File(customerFile).delete();
 	}
