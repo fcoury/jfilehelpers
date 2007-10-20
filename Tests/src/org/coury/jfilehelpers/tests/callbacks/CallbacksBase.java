@@ -64,6 +64,16 @@ public abstract class CallbacksBase extends TestCase {
 		c.custId = 2;
 		c.name = "Jane Rowe";
 		c.rating = 2;
+		customers.add(c);
+		c = new Customer();
+		c.custId = 3;
+		c.name = "Santa Claus";
+		c.rating = 3;
+		customers.add(c);
+		c = new Customer();
+		c.custId = 4;
+		c.name = "Homer Simpson";
+		c.rating = 4;
 		customers.add(c);	
 	}
 	@Override

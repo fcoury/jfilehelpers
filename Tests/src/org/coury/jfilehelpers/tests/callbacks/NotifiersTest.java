@@ -33,9 +33,9 @@ public class NotifiersTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(readCount,2);
-		assertEquals(writeCount,2);
-		assertEquals(notifyLine,"2,Jane Rowe,2");
-		assertEquals(customers.size(),2);
+		assertEquals(readCount,4);
+		assertEquals(writeCount,4);
+		assertEquals(notifyLine,"4,Homer Simpson,4");
+		assertEquals(customers.size(),4);
 	}
 }

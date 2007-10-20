@@ -68,9 +68,9 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(beforeReadCount,2);
-		assertEquals(afterReadCount,2);
-		assertEquals(customers.size(),2);
+		assertEquals(beforeReadCount,4);
+		assertEquals(afterReadCount,4);
+		assertEquals(customers.size(),4);
 	}
 
 	public void testBeforeReadSkip() {
@@ -89,7 +89,7 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(customers.size(),1);
+		assertEquals(customers.size(),3);
 	}
 
 	public void testAfterRead() {
@@ -110,8 +110,8 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(afterReadCount,2);
-		assertEquals(customers.size(),2);
+		assertEquals(afterReadCount,4);
+		assertEquals(customers.size(),4);
 	}
 
 	public void testAfterReadSkip() {
@@ -130,7 +130,7 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(customers.size(),1);
+		assertEquals(customers.size(),3);
 	}
 
 	public void testWriteRecord() {
@@ -162,9 +162,9 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(beforeWriteCount,2);
-		assertEquals(afterWriteCount,2);
-		assertEquals(customers.size(),2);
+		assertEquals(beforeWriteCount,4);
+		assertEquals(afterWriteCount,4);
+		assertEquals(customers.size(),4);
 	}
 
 	public void testBeforeWriteSkip() {
@@ -183,7 +183,7 @@ public class EventsTest extends CallbacksBase {
 			customers = engine.readFile(customerFile);
 		} catch (IOException e) {
 		}
-		assertEquals(customers.size(),1);
+		assertEquals(customers.size(),3);
 	}
 
 }
