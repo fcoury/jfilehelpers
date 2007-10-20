@@ -1,7 +1,7 @@
 /*
  * MasterDetailEngine.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,6 +34,7 @@ import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.core.RecordInfo;
 import org.coury.jfilehelpers.engines.EngineBase;
 import org.coury.jfilehelpers.engines.LineInfo;
+import org.coury.jfilehelpers.helpers.ProgressHelper;
 import org.coury.jfilehelpers.helpers.StringHelper;
 
 /**
@@ -145,8 +146,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 			max = Math.min(max, maxRecords);
 		}
 
-		// TODO progress
-		// ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, max);
+		ProgressHelper.notify(notifyHandler, progressMode, 0, max);
 
 		for (int i = 0; i < max; i++) {
 			try {
@@ -154,8 +154,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 					throw new IllegalArgumentException("The record at index " + i + " is null.");
 				}
 				
-				// TODO progress
-				// ProgressHelper.Notify(mNotifyHandler, mProgressMode, i+1, max);
+				ProgressHelper.notify(notifyHandler, progressMode, i+1, max);
 
 				currentLine = masterInfo.recordToStr(records.get(i).getMaster());
 				writer.write(currentLine + StringHelper.NEW_LINE);
@@ -218,8 +217,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		completeLine = freader.readNextLine();
 		currentLine = completeLine;
 
-		// TODO progress
-		// ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, -1);
+		ProgressHelper.notify(notifyHandler, progressMode, 0, -1);
 		
 		int currentRecord = 0;
 
@@ -246,8 +244,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 
 				line.reload(currentLine);
 				
-				// TODO progress
-				// ProgressHelper.Notify(mNotifyHandler, mProgressMode, currentRecord, -1);
+				ProgressHelper.notify(notifyHandler, progressMode, currentRecord, -1);
 
 				RecordAction action = recordSelector.getRecordAction(currentLine);
 				switch (action) {

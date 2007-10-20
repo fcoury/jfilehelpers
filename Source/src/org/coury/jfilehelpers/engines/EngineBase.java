@@ -1,7 +1,7 @@
 /*
  * EngineBase.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@ package org.coury.jfilehelpers.engines;
 
 import org.coury.jfilehelpers.core.RecordInfo;
 import org.coury.jfilehelpers.enums.ProgressMode;
+import org.coury.jfilehelpers.progress.ProgressChangeHandler;
 
 public abstract class EngineBase<T> {
 	protected RecordInfo<T> recordInfo;
@@ -38,25 +39,25 @@ public abstract class EngineBase<T> {
 	}
 	
 	protected ProgressMode progressMode = ProgressMode.DontNotify;
-	// TODO Enable those fields
+	// TODO Enable this field
 	/*
 	private ErrorManager errorManager;
+	*/
 	protected ProgressChangeHandler notifyHandler = null;
 	
-	private void setProgressHandler(ProgressChangeHandler handler) {
-		setProgressHandler(handler, ProgressMode.NOTIFY_RECORDS);
+	public void setProgressHandler(ProgressChangeHandler handler) {
+		setProgressHandler(handler, ProgressMode.NotifyRecords);
 	}
 	
-	private void setProgressHandler(ProgressChangeHandler handler, ProgressMode mode) {
+	public void setProgressHandler(ProgressChangeHandler handler, ProgressMode mode) {
 		this.notifyHandler = handler;
 		
-		if (mode == ProgressMode.NOTIFY_BYTES) {
-			throw new NotImplementedException("Not implemented yet. Planed for version 1.5.0")
+		if (mode == ProgressMode.NotifyBytes) {
+			throw new UnsupportedOperationException("Not implemented yet. Planned for version 1.5.0");
 		}
 		
 		this.progressMode = mode;
 	}
-	*/
 	
 	protected void resetFields() {
 		this.lineNumber = 0;

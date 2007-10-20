@@ -33,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.coury.jfilehelpers.core.ForwardReader;
+import org.coury.jfilehelpers.helpers.ProgressHelper;
 import org.coury.jfilehelpers.helpers.StringHelper;
 import org.coury.jfilehelpers.interfaces.NotifyRead;
 import org.coury.jfilehelpers.interfaces.NotifyWrite;
@@ -91,8 +92,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 				max = Math.min(max < 0 ? Integer.MAX_VALUE : max, ((Collection<T>) records).size());
 			}
 			
-			// TODO progress
-			// ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, max);
+			ProgressHelper.notify(notifyHandler, progressMode, 0, max);
 			
 			String currentLine = null;
 			int recIndex = 0;
@@ -116,8 +116,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 					}
 					
 					boolean skip = false;
-					// TODO progress
-					// ProgressHelper.Notify(mNotifyHandler, mProgressMode, recIndex+1, max);
+					ProgressHelper.notify(notifyHandler, progressMode, recIndex+1, max);
 					skip = onBeforeWriteRecord(rec);
 					
 					if (!skip) {
@@ -146,7 +145,15 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 //						break;
 //				}
 				}
+				recIndex++;
 			}
+			totalRecords = recIndex;
+
+//			if (mFooterText != null && mFooterText != string.Empty)
+//				if (mFooterText.EndsWith(StringHelper.NewLine))
+//					writer.Write(mFooterText);
+//				else
+//					writer.WriteLine(mFooterText);
 		} 
 		finally {
 			writer.flush();
@@ -212,7 +219,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 		completeLine = freader.readNextLine();
 		currentLine = completeLine;
 		
-		//ProgressHelper.Notify(mNotifyHandler, mProgressMode, 0, -1);
+		ProgressHelper.notify(notifyHandler, progressMode, 0, -1);
 		
 		if (recordInfo.getIgnoreFirst() > 0) {
 			for (int i = 0; i < recordInfo.getIgnoreFirst() && currentLine != null; i++) {
@@ -239,7 +246,7 @@ public class FileHelperEngine<T> extends EngineBase<T> {
 			
 			boolean skip = false;
 			
-			//ProgressHelper.Notify(mNotifyHandler, mProgressMode, currentRecord, -1);
+			ProgressHelper.notify(notifyHandler, progressMode, currentRecord, -1);
 			BeforeReadRecordEventArgs<T> e = new BeforeReadRecordEventArgs<T>(currentLine, lineNumber);
 			skip = onBeforeReadRecord(e);
 			if (e.getRecordLineChanged()) {
