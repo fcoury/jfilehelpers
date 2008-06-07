@@ -66,4 +66,44 @@ public class Customer {
 		b.append("   stockSimbol = " + stockSimbol).append(l);
 		return StringHelper.toStringBuilder(this, b.toString());
 	}
+
+	public Integer getCustId() {
+		return custId;
+	}
+
+	public void setCustId(Integer custId) {
+		this.custId = custId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getRating() {
+		return rating;
+	}
+
+	public void setRating(Integer rating) {
+		this.rating = rating;
+	}
+
+	public Date getAddedDate() {
+		return addedDate;
+	}
+
+	public void setAddedDate(Date addedDate) {
+		this.addedDate = addedDate;
+	}
+
+	public String getStockSimbol() {
+		return stockSimbol;
+	}
+
+	public void setStockSimbol(String stockSimbol) {
+		this.stockSimbol = stockSimbol;
+	}
 }

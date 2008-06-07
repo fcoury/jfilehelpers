@@ -1,9 +1,9 @@
 <project name="JFileHelpers" basedir="." default="junit">
 	
-	<property name="version" value="0.1a" />
+	<property name="version" value="0.2a" />
 	<property name="dist" value="${basedir}/dist" />
 	<property name="build" value="${basedir}/bin" />
-	
+
 	<tstamp>
 		<format property="TODAY" pattern="yyyyMMdd"/>
 	</tstamp>
@@ -11,6 +11,21 @@
 	<target name="init">
 		<mkdir dir="${dist}" />
 	</target>	
+	
+	<target name="src" depends="init">
+		<zip file="${dist}/jfilehelpers-src-${version}-${TODAY}.zip">
+			<zipfileset dir="${basedir}" includes="Source/**/*"></zipfileset>
+			<zipfileset dir="${basedir}" includes="Tests/**/*"></zipfileset>
+			<zipfileset dir="${basedir}" includes="Samples/**/*"></zipfileset>
+			<zipfileset dir="${basedir}" includes="Resources/**/*"></zipfileset>
+			<zipfileset dir="${basedir}" includes="lib/*"></zipfileset>
+			<zipfileset dir="${basedir}" includes=".classpath"></zipfileset>
+			<zipfileset dir="${basedir}" includes=".project"></zipfileset>
+			<zipfileset dir="${basedir}" includes="build.xml"></zipfileset>
+			<zipfileset dir="${basedir}" includes="jfilehelpers.jardesc"></zipfileset>
+			<zipfileset dir="${basedir}" includes="port-differences.txt"></zipfileset>
+		</zip>
+	</target>
 	
 	<target name="jars" depends="init">
 		<jar destfile="${dist}/jfilehelpers-${version}-${TODAY}.jar">

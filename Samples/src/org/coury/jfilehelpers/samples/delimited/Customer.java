@@ -29,12 +29,12 @@ import org.coury.jfilehelpers.helpers.StringHelper;
 
 @DelimitedRecord(",")
 public class Customer {
-	public Integer custId;
-	public String name;
-	public Integer rating;
+	private Integer custId;
+	private String name;
+	private Integer rating;
 	
 	@FieldConverter(converter = ConverterKind.Date, format = "dd-MM-yyyy")
-	public Date addedDate;
+	private Date addedDate;
 	
 	@Override
 	public String toString() {
