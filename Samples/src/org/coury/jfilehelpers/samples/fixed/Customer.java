@@ -36,23 +36,23 @@ import org.coury.jfilehelpers.helpers.StringHelper;
 @FixedLengthRecord()
 public class Customer {
 	@FieldFixedLength(4)
-	public Integer custId;
+	private Integer custId;
 
 	@FieldAlign(alignMode=AlignMode.Right)
 	@FieldFixedLength(20)
-	public String name;
+	private String name;
 
 	@FieldFixedLength(3)
-	public Integer rating;
+	private Integer rating;
 
 	@FieldTrim(trimMode=TrimMode.Right)
 	@FieldFixedLength(10)
 	@FieldConverter(converter = ConverterKind.Date, format = "dd-MM-yyyy")
-	public Date addedDate;
+	private Date addedDate;
 	
 	@FieldFixedLength(3)
 	@FieldOptional
-	public String stockSimbol;	
+	private String stockSimbol;	
 	
 	@Override
 	public String toString() {

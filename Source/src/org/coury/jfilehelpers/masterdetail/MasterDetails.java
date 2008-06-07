@@ -26,7 +26,6 @@ public class MasterDetails<MT, DT> {
 	private List<DT> details;
 	private MT master;
 	
-	@SuppressWarnings("unchecked")
 	public MasterDetails() {
 		details = new ArrayList<DT>();
 	}

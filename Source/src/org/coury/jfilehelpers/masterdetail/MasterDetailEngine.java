@@ -49,8 +49,8 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 
 	@SuppressWarnings("unused")
 	private Class<MT> masterRecordClass;
-	private RecordInfo<MT> masterInfo;
-	private MasterDetailSelector recordSelector;
+	private final RecordInfo<MT> masterInfo;
+	private final MasterDetailSelector recordSelector;
 
 	public MasterDetailEngine(Class<MT> masterRecordClass, Class<DT> detailRecordClass, MasterDetailSelector recordSelector) {
 		super(detailRecordClass);
@@ -197,7 +197,6 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		}		
 	}
 		
-	@SuppressWarnings("unchecked")
 	private List<MasterDetails<MT, DT>> readStream(InputStreamReader fileReader) throws IOException {
 		BufferedReader reader = new BufferedReader(fileReader);
 
@@ -258,7 +257,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 						record = new MasterDetails<MT, DT>();
 						tmpDetails.clear();
 						
-						MT lastMaster = (MT) masterInfo.strToRecord(line);
+						MT lastMaster = masterInfo.strToRecord(line);
 
 						if (lastMaster != null) {
 							record.setMaster(lastMaster);
@@ -267,7 +266,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 						break;
 
 					case Detail:
-						DT lastChild = (DT) recordInfo.strToRecord(line);
+						DT lastChild = recordInfo.strToRecord(line);
 
 						if (lastChild != null) {
 							tmpDetails.add(lastChild);
@@ -324,9 +323,9 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 
 	class CommonInternalSelector {
 		
-		private String selector;
-		private boolean ignoreEmpty;
-		private CommonSelector action;
+		private final String selector;
+		private final boolean ignoreEmpty;
+		private final CommonSelector action;
 		
 		public CommonInternalSelector(CommonSelector action, String selector, boolean ignoreEmpty) {
 			this.action = action;

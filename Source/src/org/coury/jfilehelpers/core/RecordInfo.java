@@ -23,6 +23,8 @@ package org.coury.jfilehelpers.core;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -50,7 +52,7 @@ import org.coury.jfilehelpers.interfaces.NotifyWrite;
  */
 public final class RecordInfo<T> {
 	private FieldBase[] fields;
-	private Class<T> recordClass;
+	private final Class<T> recordClass;
 	private Constructor<T> recordConstructor;
 
 	private int ignoreFirst = 0;
@@ -101,8 +103,9 @@ public final class RecordInfo<T> {
 			record = createRecordObject();
 			for (int i = 0; i < fieldCount; i++) {
 				// sets the field on the object
-				Field f = record.getClass().getField(fields[i].getFieldInfo().getName());
-				f.set(record, values[i]);
+				setInternalField(fields[i].getFieldInfo().getName(), record, values[i]);
+//				Field f = record.getClass().getDeclaredField(fields[i].getFieldInfo().getName());
+//				f.set(record, values[i]);
 				// fields[i].getFieldInfo().set(record, values[i]);
 			}
 		}
@@ -133,6 +136,44 @@ public final class RecordInfo<T> {
 //        }
 	}
 	
+	static Object getInternalField(final String fieldName, final Object target) {
+	    Object value = AccessController
+	            .doPrivileged(new PrivilegedAction<Object>() {
+	                public Object run() {
+	                    Object result = null;
+	                    java.lang.reflect.Field field = null;
+	                    try {
+	                        field = target.getClass().getDeclaredField(
+	                                fieldName);
+	                        field.setAccessible(true);
+	                        result = field.get(target);
+	                    } catch (Exception e1) {
+	                        return null;
+	                    }
+	                    return result;
+	                }
+	            });
+	    return value;
+	}	
+	
+	static void setInternalField(final String fieldName, final Object target, final Object value) {
+	    AccessController.doPrivileged(new PrivilegedAction<Object>() {
+	                public Object run() {
+	                    Object result = null;
+	                    java.lang.reflect.Field field = null;
+	                    try {
+	                        field = target.getClass().getDeclaredField(
+	                                fieldName);
+	                        field.setAccessible(true);
+	                        field.set(target, value);
+	                    } catch (Exception e1) {
+	                        return null;
+	                    }
+	                    return result;
+	                }
+	            });
+	}	
+	
 	/**
 	 * Creates a string representation of the record object
 	 * 
@@ -146,7 +187,9 @@ public final class RecordInfo<T> {
 		
 		Object[] values = new Object[fieldCount];
 		for (int i = 0; i < fieldCount; i++) {
-			values[i] = fields[i].getFieldInfo().get(record);
+//			values[i] = fields[i].getFieldInfo().get(record);
+			values[i] = getInternalField(fields[i].getFieldInfo().getName(), record);
+
 		}
 
 		for (int i = 0; i < fieldCount; i++) {
@@ -233,7 +276,6 @@ public final class RecordInfo<T> {
 	 * Initiate the values of member fields by looking for annotations on the
 	 * record object that changes behavior
 	 */
-	@SuppressWarnings("unchecked")
 	private void initFields() {
 		IgnoreFirst igf = recordClass.getAnnotation(IgnoreFirst.class);
 		if (igf != null) {
@@ -262,7 +304,7 @@ public final class RecordInfo<T> {
 			notifyWrite = true;
 		
 		try {
-			recordConstructor = (Constructor<T>) recordClass.getConstructor();
+			recordConstructor = recordClass.getConstructor();
 		} catch (SecurityException e) {
 			throw new RuntimeException(
 					"The class " + recordClass.getName() + 
@@ -272,7 +314,7 @@ public final class RecordInfo<T> {
 
 			try {
 				if (recordClass.getEnclosingClass() != null) {
-					recordConstructor = (Constructor<T>) recordClass.getConstructor(recordClass.getEnclosingClass());
+					recordConstructor = recordClass.getConstructor(recordClass.getEnclosingClass());
 				}
 				throwIt = false;
 			}
@@ -286,7 +328,7 @@ public final class RecordInfo<T> {
 			}
 		}
 		
-		fields = createCoreFields(recordClass.getFields(), recordClass);
+		fields = createCoreFields(recordClass.getDeclaredFields(), recordClass);
 		fieldCount = this.fields.length;
 		
 		if (isFixedLength()) {
@@ -344,6 +386,7 @@ public final class RecordInfo<T> {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return StringHelper.toStringBuilder(this);
 	}
