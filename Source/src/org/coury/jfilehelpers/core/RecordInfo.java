@@ -182,7 +182,7 @@ public final class RecordInfo<T> {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public String recordToStr(T record) throws IllegalArgumentException, IllegalAccessException {
+	public String recordToStr(Object record) throws IllegalArgumentException, IllegalAccessException {
 		StringBuffer sb = new StringBuffer(this.sizeHint);
 		
 		Object[] values = new Object[fieldCount];
