@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -100,7 +101,6 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
 
             ProgressHelper.notify(notifyHandler, progressMode, 0, max);
 
-            String currentLine = null;
             int recIndex = 0;
             boolean first = true;
 
@@ -152,6 +152,7 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
                 }
                 recIndex++;
             }
+            currentLine = null;
             totalRecords = recIndex;
 
 //			if (mFooterText != null && mFooterText != string.Empty)
@@ -166,17 +167,15 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
 
     public List<T> readFile(String fileName, int maxRecords) throws IOException {
         List<T> tempRes = null;
-
-        FileReader fr = null;
+        Reader r = null;
         try {
-            fr = new FileReader(new File(fileName));
-            tempRes = readStream(fr, maxRecords);
+            r = new FileReader(new File(fileName));
+            tempRes = readStream(r, maxRecords);
         } finally {
-            if (fr != null) {
-                fr.close();
+            if (r != null) {
+                r.close();
             }
         }
-
         return tempRes;
     }
 
@@ -186,21 +185,20 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
 
     public List<T> readResource(String fileName, int maxRecords) throws IOException {
         List<T> tempRes = null;
-
-        InputStreamReader isr = null;
+        Reader r = null;
         try {
-            isr = new InputStreamReader(getClass().getResourceAsStream(fileName));
-            tempRes = readStream(isr, maxRecords);
+            r = new InputStreamReader(getClass().getResourceAsStream(fileName));
+            tempRes = readStream(r, maxRecords);
         } finally {
-            if (isr != null) {
-                isr.close();
+            if (r != null) {
+                r.close();
             }
         }
 
         return tempRes;
     }
 
-    public List<T> readStream(InputStreamReader fileReader, int maxRecords) throws IOException {
+    public List<T> readStream(Reader fileReader, int maxRecords) throws IOException {
         List<T> list = null;
         try {
             list = new ArrayList<T>();
@@ -225,13 +223,23 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
         openStream(fr, maxRecords);
     }
     
-    public void close() throws IOException {
-        if (fr != null) {
-            fr.close();
+    public void openResource(String resourceName) throws IOException {
+        openResource(resourceName, Integer.MAX_VALUE);
+    }
+
+    public void openResource(String fileName, int maxRecords) throws IOException {
+        Reader r = null;
+        try {
+            r = new InputStreamReader(getClass().getResourceAsStream(fileName));
+            openStream(r, maxRecords);
+        } finally {
+            if (r != null) {
+                r.close();
+            }
         }
     }
     
-    public void openStream(InputStreamReader fileReader, int maxRecords) throws IOException {
+    public void openStream(Reader fileReader, int maxRecords) throws IOException {
         BufferedReader reader = new BufferedReader(fileReader);
         resetFields();
         setHeaderText("");
@@ -264,6 +272,12 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
 
         line = new LineInfo(currentLine);
         line.setReader(freader);
+    }
+    
+    public void close() throws IOException {
+        if (fr != null) {
+            fr.close();
+        }
     }
     
     public void setBeforeReadRecordHandler(BeforeReadRecordHandler<T> beforeReadRecordHandler) {
