@@ -3,6 +3,7 @@
 	<property name="version" value="0.2a" />
 	<property name="dist" value="${basedir}/dist" />
 	<property name="build" value="${basedir}/bin" />
+        <property name="lib" value="${basedir}/lib" />
 
 	<tstamp>
 		<format property="TODAY" pattern="yyyyMMdd"/>
@@ -10,6 +11,7 @@
 	
 	<target name="init">
 		<mkdir dir="${dist}" />
+		<mkdir dir="${build}" />
 	</target>	
 	
 	<target name="src" depends="init">
@@ -27,12 +29,20 @@
 		</zip>
 	</target>
 	
-	<target name="jars" depends="init">
+        <target name="compile" depends="init">
+               <javac destdir="${build}" classpath="${lib}/commons-lang-2.3.jar">
+                  <src path="${basedir}/Source/src" />
+                  <src path="${basedir}/Tests/src" />
+                  <src path="${basedir}/Samples/src" />
+               </javac>
+        </target>
+
+	<target name="jars" depends="compile">
 		<jar destfile="${dist}/jfilehelpers-${version}-${TODAY}.jar">
 			<manifest>
 			</manifest>
 			<fileset dir="bin" includes="**/*.class" />
-			<fileset dir="Resources" />
+			<fileset dir="Resources" includes="**/*" />
 		</jar>
 	</target>
 	
