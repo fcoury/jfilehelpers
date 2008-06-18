@@ -1,5 +1,5 @@
 /*
- * FixedLengthRecord.java
+ * TestFixed.java
  *
  * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
  * 
@@ -17,18 +17,28 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
+package org.coury.jfilehelpers.samples.fixed.lesschars;
 
-package org.coury.jfilehelpers.annotations;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.coury.jfilehelpers.engines.FileHelperEngine;
 
-import org.coury.jfilehelpers.enums.FixedMode;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface FixedLengthRecord {
-	FixedMode fixedMode() default FixedMode.ExactLength;
+public class TestFixed {
+	public static void main(String[] args) throws IOException {
+		FileHelperEngine<Track> engine = new FileHelperEngine<Track>(Track.class);	
+		List<Track> tracks = new ArrayList<Track>();
+		
+		if (args.length < 1) {
+			tracks = engine.readResource("/samples/tracks-fixed.txt");
+		}
+		else {
+			tracks = engine.readFile(args[0]);
+		}
+		
+		for (Track t : tracks) {
+			System.out.println(t);
+		}
+	}
 }

@@ -67,11 +67,12 @@ public class FieldFactory {
 						"The FieldFixedLength is only for the FixedLength not for the delimited ones.");
 			}
 			
+			FixedLengthRecord fixedLengthRecord = (FixedLengthRecord) recordClass.getAnnotation(FixedLengthRecord.class);
 			FieldFixedLength attb = fi.getAnnotation(FieldFixedLength.class);
 			FieldAlign align = fi.getAnnotation(FieldAlign.class);
 			
 			res = new FixedLengthField(
-					fi, attb.value(), FieldAlignBean.createFromAnnotation(align, fi));
+					fi, attb.value(), FieldAlignBean.createFromAnnotation(align, fi), fixedLengthRecord.fixedMode());
 		}
 		else if (fi.isAnnotationPresent(FieldDelimiter.class)) {
 			if (recordClass.isAnnotationPresent(FixedLengthRecord.class)) {

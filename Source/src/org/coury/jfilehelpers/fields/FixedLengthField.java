@@ -30,14 +30,15 @@ import org.coury.jfilehelpers.helpers.StringHelper;
 
 public class FixedLengthField extends FieldBase {
 
-	private int fieldLength;
-	private FieldAlignBean align;
-	private FixedMode fixedMode = FixedMode.ExactLength;
+	private final int fieldLength;
+	private final FieldAlignBean align;
+	private final FixedMode fixedMode;
 	
-	public FixedLengthField(Field fi, int length, FieldAlignBean align) {
+	public FixedLengthField(Field fi, int length, FieldAlignBean align, FixedMode fixedMode) {
 		super(fi);
 		this.fieldLength = length;
 		this.align = align;
+		this.fixedMode = fixedMode;
 	}
 	
 	@Override

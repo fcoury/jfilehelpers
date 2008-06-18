@@ -1,7 +1,7 @@
 /*
- * FixedLengthRecord.java
+ * TestDelimited.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,17 +18,32 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package org.coury.jfilehelpers.annotations;
+package org.coury.jfilehelpers.samples.delimited.open;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.IOException;
 
-import org.coury.jfilehelpers.enums.FixedMode;
+import org.coury.jfilehelpers.engines.FileHelperEngine;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface FixedLengthRecord {
-	FixedMode fixedMode() default FixedMode.ExactLength;
+public class TestDelimitedIterator {
+	public static void main(String[] args) throws IOException {
+		FileHelperEngine<Customer> engine = new FileHelperEngine<Customer>(
+				Customer.class);
+		
+		if (args.length < 1) {
+			engine.openResource("/samples/customers-delimited.txt");
+		} else {
+			engine.openFile(args[0]);
+		}
+		
+		int count = 0;
+		for (Customer c : engine) {
+			if ("Felipe Coury".equals(c.getName())) {
+				count++;
+			}
+
+		}
+		
+		engine.close();
+		System.out.println(count);
+	}
 }

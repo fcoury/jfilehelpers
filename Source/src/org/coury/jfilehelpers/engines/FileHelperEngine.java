@@ -26,36 +26,37 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Writer;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.coury.jfilehelpers.core.ForwardReader;
+import org.coury.jfilehelpers.events.AfterReadRecordEventArgs;
+import org.coury.jfilehelpers.events.AfterReadRecordHandler;
+import org.coury.jfilehelpers.events.AfterWriteRecordEventArgs;
+import org.coury.jfilehelpers.events.AfterWriteRecordHandler;
+import org.coury.jfilehelpers.events.BeforeReadRecordEventArgs;
+import org.coury.jfilehelpers.events.BeforeReadRecordHandler;
+import org.coury.jfilehelpers.events.BeforeWriteRecordEventArgs;
+import org.coury.jfilehelpers.events.BeforeWriteRecordHandler;
 import org.coury.jfilehelpers.helpers.ProgressHelper;
 import org.coury.jfilehelpers.helpers.StringHelper;
 import org.coury.jfilehelpers.interfaces.NotifyRead;
 import org.coury.jfilehelpers.interfaces.NotifyWrite;
-import org.coury.jfilehelpers.events.*;
 
-public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, Iterable<T>, Collection<T> {
-    private boolean isResource = false;
-    private int isEmpty = -1;
-    private String file = null;
+public class FileHelperEngine<T> extends EngineBase<T> implements Iterable<T> {
+
     private int maxRecords = 0;
     private int currentRecord = 0;
-    private int recIndex = 0;
-    private int size = -1;
     private LineInfo line;
     private String currentLine;
     private String completeLine;
     private FileReader fr = null;
-    private FileWriter fw = null;
     private ForwardReader freader = null;
+    
     private BeforeReadRecordHandler<T> beforeReadRecordHandler;
     private AfterReadRecordHandler<T> afterReadRecordHandler;
     private BeforeWriteRecordHandler<T> beforeWriteRecordHandler;
@@ -63,6 +64,10 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
 
     public FileHelperEngine(Class<T> recordClass) {
         super(recordClass);
+    }
+
+    public List<T> readFile(String fileName) throws IOException {
+        return readFile(fileName, Integer.MAX_VALUE);
     }
 
     public void writeFile(String fileName, List<T> records) throws IOException {
@@ -84,9 +89,6 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
     }
 
     private void writeStream(Writer osr, Iterable<T> records, int maxRecords) throws IOException {
-        for (T rec : records) {
-            
-        }
         BufferedWriter writer = new BufferedWriter(osr);
 
         try {
@@ -170,17 +172,18 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
         }
     }
     
-    public List<T> readFile(String fileName) throws IOException {
-        return readFile(fileName, Integer.MAX_VALUE);
-    }
-
     public List<T> readFile(String fileName, int maxRecords) throws IOException {
-        openFile(fileName, maxRecords);
-        List<T> list = new ArrayList<T>();
-        for (T t : this) {
-            list.add(t);
+        List<T> tempRes = null;
+        Reader r = null;
+        try {
+            r = new FileReader(new File(fileName));
+            tempRes = readStream(r, maxRecords);
+        } finally {
+            if (r != null) {
+                r.close();
+            }
         }
-        return list;
+        return tempRes;
     }
 
     public List<T> readResource(String resourceName) throws IOException {
@@ -188,10 +191,32 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
     }
 
     public List<T> readResource(String fileName, int maxRecords) throws IOException {
-        openResource(fileName, maxRecords);
-        List<T> list = new ArrayList<T>();
-        for (T t : this) {
-            list.add(t);
+        List<T> tempRes = null;
+        Reader r = null;
+        try {
+            r = new InputStreamReader(getClass().getResourceAsStream(fileName));
+            tempRes = readStream(r, maxRecords);
+        } finally {
+            if (r != null) {
+                r.close();
+            }
+        }
+
+        return tempRes;
+    }
+
+    public List<T> readStream(Reader fileReader, int maxRecords) throws IOException {
+        List<T> list = null;
+        try {
+            list = new ArrayList<T>();
+            openStream(fileReader, maxRecords);
+            for (T t : this) {
+                list.add(t);
+            }
+        } catch (IOException e) {
+            throw e;
+        } finally {
+            close();
         }
         return list;
     }
@@ -199,37 +224,22 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
     public void openFile(String fileName) throws IOException {
         openFile(fileName, Integer.MAX_VALUE);
     }
-
+    
     public void openFile(String fileName, int maxRecords) throws IOException {
-        isResource = false;
-        file = fileName;
-        File f = new File(fileName);
-        if (!f.exists()) {
-            f.createNewFile();
-        }
-        fr = new FileReader(f);
-        fw = new FileWriter(f, true);
-        this.maxRecords = maxRecords;
+        fr = new FileReader(new File(fileName));
+        openStream(fr, maxRecords);
     }
-
+    
     public void openResource(String resourceName) throws IOException {
         openResource(resourceName, Integer.MAX_VALUE);
     }
 
     public void openResource(String fileName, int maxRecords) throws IOException {
-        isResource = true;
-        file = fileName;
         Reader r = null;
-        try {
-            r = new InputStreamReader(getClass().getResourceAsStream(fileName));
-            openStream(r, maxRecords);
-        } finally {
-            if (r != null) {
-                r.close();
-            }
-        }
+        r = new InputStreamReader(getClass().getResourceAsStream(fileName));
+        openStream(r, maxRecords);
     }
-
+    
     public void openStream(Reader fileReader, int maxRecords) throws IOException {
         BufferedReader reader = new BufferedReader(fileReader);
         resetFields();
@@ -264,16 +274,13 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
         line = new LineInfo(currentLine);
         line.setReader(freader);
     }
-
+    
     public void close() throws IOException {
         if (fr != null) {
             fr.close();
         }
-        if (fw != null) {
-            fw.close();
-        }
     }
-
+    
     public void setBeforeReadRecordHandler(BeforeReadRecordHandler<T> beforeReadRecordHandler) {
         this.beforeReadRecordHandler = beforeReadRecordHandler;
     }
@@ -334,288 +341,52 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterator<T>, I
     }
 
     public boolean hasNext() {
-        if (totalRecords == 0) {
-            try {
-                openStream(fr, maxRecords);
-            } catch (IOException ex) {
-                throw new Error(ex);
-            }
-        }
         return (currentLine != null);
     }
 
-    public T next() {
-        T record = null;
-        if (currentLine != null && currentRecord < maxRecords) {
-            try {
-                totalRecords++;
-                currentRecord++;
-                line.reload(currentLine);
-                boolean skip = false;
-                ProgressHelper.notify(notifyHandler, progressMode, currentRecord, -1);
-                BeforeReadRecordEventArgs<T> e = new BeforeReadRecordEventArgs<T>(currentLine, lineNumber);
-                skip = onBeforeReadRecord(e);
-                if (e.getRecordLineChanged()) {
-                    line.reload(e.getRecordLine());
-                }
-                if (!skip) {
-                    record = recordInfo.strToRecord(line);
-                    skip = onAfterReadRecord(currentLine, record);
-                }
-                currentLine = freader.readNextLine();
-                completeLine = currentLine;
-                lineNumber++;
-            } catch (IOException ex) {
-                throw new Error(ex);
-            }
-        }
-        return record;
-    }
-
-    public void remove() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
     public Iterator<T> iterator() {
-        return this;
+        return new Iterator<T>() {
+
+			@Override
+			public boolean hasNext() {
+		        return (currentLine != null);
+			}
+
+			@Override
+			public T next() {
+		        T record = null;
+		        if (currentLine != null && currentRecord < maxRecords) {
+		            try {
+		                totalRecords++;
+		                currentRecord++;
+		                line.reload(currentLine);
+		                boolean skip = false;
+		                ProgressHelper.notify(notifyHandler, progressMode, currentRecord, -1);
+		                BeforeReadRecordEventArgs<T> e = new BeforeReadRecordEventArgs<T>(currentLine, lineNumber);
+		                skip = onBeforeReadRecord(e);
+		                if (e.getRecordLineChanged()) {
+		                    line.reload(e.getRecordLine());
+		                }
+		                if (!skip) {
+		                    record = recordInfo.strToRecord(line);
+		                    skip = onAfterReadRecord(currentLine, record);
+		                }
+		                currentLine = freader.readNextLine();
+		                completeLine = currentLine;
+		                lineNumber++;
+		            } catch (IOException ex) {
+		                throw new Error(ex);
+		            }
+		        }
+		        return record;
+			}
+
+			@Override
+			public void remove() {
+		        throw new UnsupportedOperationException("Not supported yet.");
+			}
+        	
+        };
     }
-
-    public int size() {
-        FileHelperEngine<T> fileHelperEngine = null;
-        try {
-            if (size == -1) {
-                fileHelperEngine = new FileHelperEngine<T>(recordClass);
-                if (isResource) {
-                    fileHelperEngine.openResource(file, maxRecords);
-                } else {
-                    fileHelperEngine.openFile(file, maxRecords);
-                }
-                for (T t : fileHelperEngine) {
-                }
-                size = fileHelperEngine.getTotalRecords();
-            }
-            return size;
-        } catch (IOException ex) {
-            throw new Error(ex);
-        } finally {
-            if (fileHelperEngine == null) {
-                try {
-                    fileHelperEngine.close();
-                } catch (IOException ex) {
-                    throw new Error(ex);
-                }
-            }
-        }
-    }
-
-    public boolean isEmpty() {
-        FileHelperEngine<T> fileHelperEngine = null;
-        try {
-            if (isEmpty == -1) {
-                fileHelperEngine = new FileHelperEngine<T>(recordClass);
-                if (isResource) {
-                    fileHelperEngine.openResource(file, maxRecords);
-                } else {
-                    fileHelperEngine.openFile(file, maxRecords);
-                }
-                for (T t : fileHelperEngine) {
-                    isEmpty = 0;
-                    return false;
-                }
-                isEmpty = 1;
-                return true;
-            }
-            if (isEmpty == 0) {
-                return false;
-            } else if (isEmpty == 1) {
-                return true;
-            }
-            return true;
-        } catch (IOException ex) {
-            throw new Error(ex);
-        } finally {
-            if (fileHelperEngine == null) {
-                try {
-                    fileHelperEngine.close();
-                } catch (IOException ex) {
-                    throw new Error(ex);
-                }
-            }
-        }
-    }
-
-    public boolean contains(Object o) {
-        FileHelperEngine<T> fileHelperEngine = null;
-        try {
-            fileHelperEngine = new FileHelperEngine<T>(recordClass);
-            if (isResource) {
-                fileHelperEngine.openResource(file, maxRecords);
-            } else {
-                fileHelperEngine.openFile(file, maxRecords);
-            }
-            for (T t : fileHelperEngine) {
-                if (recordInfo.recordToStr(o).equals(recordInfo.recordToStr(t))) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (Exception ex) {
-            throw new Error(ex);
-        } finally {
-            if (fileHelperEngine == null) {
-                try {
-                    fileHelperEngine.close();
-                } catch (IOException ex) {
-                    throw new Error(ex);
-                }
-            }
-        }
-    }
-
-    public Object[] toArray() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public <T> T[] toArray(T[] a) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean add(T e) {
-        try {
-            BufferedWriter writer = new BufferedWriter(fw);
-            if (totalRecords == 0) {
-                resetFields();
-                if (getHeaderText() != null && getHeaderText().length() != 0) {
-                    if (getHeaderText().endsWith(StringHelper.NEW_LINE)) {
-                        fw.write(getHeaderText());
-                    } else {
-                        fw.write(getHeaderText() + StringHelper.NEW_LINE);
-                    }
-                }
-                ProgressHelper.notify(notifyHandler, progressMode, 0, maxRecords);
-            }
-        
-            this.lineNumber++;
-
-            if (e == null) {
-                throw new IllegalArgumentException(
-                        "The record is null.");
-            }
-
-            boolean skip = false;
-            ProgressHelper.notify(notifyHandler, progressMode, recIndex + 1, maxRecords);
-            skip = onBeforeWriteRecord(e);
-
-            if (!skip) {
-                currentLine = recordInfo.recordToStr(e);
-                currentLine = onAfterWriteRecord(currentLine, e);
-                writer.write(currentLine + StringHelper.NEW_LINE);
-            }
-            recIndex++;
-            currentLine = null;
-            totalRecords = recIndex;
-
-//			if (mFooterText != null && mFooterText != string.Empty)
-//				if (mFooterText.EndsWith(StringHelper.NewLine))
-//					writer.Write(mFooterText);
-//				else
-//					writer.WriteLine(mFooterText);
-            writer.flush();
-            return true;
-        } catch (Exception ex) {
-            throw new Error(ex);
-        // TODO error manager
-//				switch (mErrorManager.ErrorMode)
-//				{
-//					case ErrorMode.ThrowException:
-//						throw;
-//					case ErrorMode.IgnoreAndContinue:
-//						break;
-//					case ErrorMode.SaveAndContinue:
-//						ErrorInfo err = new ErrorInfo();
-//						err.mLineNumber = mLineNumber;
-//						err.mExceptionInfo = ex;
-////						err.mColumnNumber = mColumnNum;
-//						err.mRecordString = currentLine;
-//						mErrorManager.AddError(err);
-//						break;
-//				}
-        } finally {
-            try {
-                fw.flush();
-            } catch (IOException ex) {
-                throw new Error(ex);
-            }
-        }
-    }
-
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean containsAll(Collection<?> c) {
-        boolean[] found = new boolean[c.size()];
-        for (int x = 0; x < found.length; x++) {
-            found[x] = false;
-        }
-        FileHelperEngine<T> fileHelperEngine = null;
-        try {
-            fileHelperEngine = new FileHelperEngine<T>(recordClass);
-            if (isResource) {
-                fileHelperEngine.openResource(file, maxRecords);
-            } else {
-                fileHelperEngine.openFile(file, maxRecords);
-            }
-            for (T t : fileHelperEngine) {
-                int i = 0;
-                for (Object o : c) {
-                    if (recordInfo.recordToStr(o).equals(recordInfo.recordToStr(t))) {
-                        found[i] = true;
-                    }
-                    i++;
-                }
-                int countFound = 0;
-                for (int x = 0; x < found.length; x++) {
-                    if (found[x]) {
-                        countFound++;
-                    }
-                }
-                if (countFound == found.length) {
-                    return true;
-                }
-            }
-            return false;
-        } catch (Exception ex) {
-            throw new Error(ex);
-        } finally {
-            if (fileHelperEngine == null) {
-                try {
-                    fileHelperEngine.close();
-                } catch (IOException ex) {
-                    throw new Error(ex);
-                }
-            }
-        }
-    }
-
-    public boolean addAll(Collection<? extends T> c) {
-        for (T t : c) {
-            if (!add(t)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean removeAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public boolean retainAll(Collection<?> c) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    
 }
