@@ -32,7 +32,7 @@
 			<manifest>
 			</manifest>
 			<fileset dir="bin" includes="**/*.class" />
-			<fileset dir="resources" />
+			<fileset dir="Resources" />
 		</jar>
 	</target>
 	
