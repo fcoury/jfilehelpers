@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,6 +87,12 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterable<T> {
                 fw.close();
             }
         }
+    }
+    
+    public String getRecordsAsString(List<T> records) throws IOException {
+    	StringWriter sw = new StringWriter();
+    	writeStream(sw, records, -1);
+    	return sw.getBuffer().toString();
     }
 
     private void writeStream(Writer osr, Iterable<T> records, int maxRecords) throws IOException {
