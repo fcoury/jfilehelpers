@@ -21,6 +21,7 @@ package org.coury.jfilehelpers.masterdetail;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -91,6 +92,10 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		return tempRes;
 	}
 	
+	public List<MasterDetails<MT, DT>> fromString(String s) throws IOException {
+		return readStream(new InputStreamReader(new ByteArrayInputStream(s.getBytes())));
+	}
+	
 	public List<MasterDetails<MT, DT>> readFile(String fileName) throws IOException {
 		List<MasterDetails<MT, DT>> tempRes = null;
 		
@@ -106,6 +111,13 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		}
 		
 		return tempRes;
+	}
+
+	public void writeFile(String fileName, MasterDetails<MT, DT> record) throws IOException {
+		List<MasterDetails<MT, DT>> list = new ArrayList<MasterDetails<MT, DT>>();
+		list.add(record);
+		
+		writeFile(fileName, list);
 	}
 
 	public void writeFile(String fileName, List<MasterDetails<MT, DT>> records) throws IOException {
@@ -165,6 +177,8 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 						writer.write(currentLine + StringHelper.NEW_LINE);
 					}
 				}
+
+				writer.flush();
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
