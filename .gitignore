@@ -1,3 +1,6 @@
 bin
 .settings
 .DS_Store
+TEST-*.txt
+TESTS-TestSuites.xml
+dist
