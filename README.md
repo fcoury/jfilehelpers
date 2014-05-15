@@ -7,12 +7,9 @@ JFileHelpers is a library that automates the tedious task of parsing and creatin
 
 JFileHelpers started as a port of the awesome Marcos Meli's FileHelpers but it's starting to take its own path and we are in need of passinate developers who would like to give us a hand.
 
-Go ahead and try it out! Download it now:
+Go ahead and try it out!
 
-* [Latest Binary Distribution (0.2a)](http://downloads.sourceforge.net/jfilehelpers/jfilehelpers-0.2a-20080607.jar)
-
-* [Latest Source Distribution (0.2a)](http://downloads.sourceforge.net/jfilehelpers/jfilehelpers-src-0.2a-20080607.zip)
-
+The latest binary release can always be found on the [Releases](https://github.com/fcoury/jfilehelpers/releases) area.
 
 We just opened our [forum](http://forum.jfilehelpers.com/viewforum.php?f=2) to support our users and announce new features. Log in and tell us if you have any questions or comments!
 
@@ -22,73 +19,73 @@ Let's take, for instance, a fixed length structured text file, that handles cust
 
 Here's how our bean should be:
 
-    @FixedLengthRecord()  
-    public class Customer {  
-        @FieldFixedLength(4)  
-        public Integer custId;  
-      
-        @FieldAlign(alignMode=AlignMode.Right)  
-        @FieldFixedLength(20)  
-        public String name;  
-      
-        @FieldFixedLength(3)  
-        public Integer rating;  
-      
-        @FieldTrim(trimMode=TrimMode.Right)  
-        @FieldFixedLength(10)  
-        @FieldConverter(converter = ConverterKind.Date,   
-            format = "dd-MM-yyyy")  
-        public Date addedDate;  
-          
-        @FieldFixedLength(3)  
-        @FieldOptional  
-        public String stockSimbol;    
-    }  
-              
+    @FixedLengthRecord()
+    public class Customer {
+        @FieldFixedLength(4)
+        public Integer custId;
+
+        @FieldAlign(alignMode=AlignMode.Right)
+        @FieldFixedLength(20)
+        public String name;
+
+        @FieldFixedLength(3)
+        public Integer rating;
+
+        @FieldTrim(trimMode=TrimMode.Right)
+        @FieldFixedLength(10)
+        @FieldConverter(converter = ConverterKind.Date,
+            format = "dd-MM-yyyy")
+        public Date addedDate;
+
+        @FieldFixedLength(3)
+        @FieldOptional
+        public String stockSimbol;
+    }
+
 
 This could would handle a text file structured like this:
 
-    ....|....1....|....2....|....3....|....4				
+    ....|....1....|....2....|....3....|....4
     1   Antonio Pereira     10012-12-1978ABC
     2   Felipe Coury          201-01-2007
     3   Anderson Polga       4212-11-2007DEF
-		
+
 
 And reading that file is as easy as:
 
-    FileHelperEngine<Customer> engine =   
-        new FileHelperEngine<Customer>(Customer.class);     
-    List<Customer> customers =   
-        new ArrayList<Customer>();  
-      
-    customers = engine.readResource(  
-        "/samples/customers-fixed.txt");  
+    FileHelperEngine<Customer> engine =
+        new FileHelperEngine<Customer>(Customer.class);
+    List<Customer> customers =
+        new ArrayList<Customer>();
+
+    customers = engine.readResource(
+        "/samples/customers-fixed.txt");
 
 This way, you can manipulate any properties of the beans contained on the ArrayList collection and eventually, even recreate a file with same format, also as easy as:
 
-    FileHelperEngine<Customer> engine =   
-        new FileHelperEngine<Customer>(Customer.class);     
-    List<Customer> customers = new ArrayList<Customer>();  
-      
-    customers = engine.readResource(  
-        "/samples/customers-fixed.txt");  
-      
-    // retrieves customer 3 - Anderson Polga  
-    Customer c = customers.get(2);  
-    // changes a couple of properties  
-    c.rating = 82;  
-    c.stockSimbol = "APR";  
-      
-    // and removes first customer - Antonio Pereira  
-    customers.remove(0);  
-      
-    // writes the output file  
-    engine.writeFile("customers-fixed-out.txt", customers);  
+    FileHelperEngine<Customer> engine =
+        new FileHelperEngine<Customer>(Customer.class);
+    List<Customer> customers = new ArrayList<Customer>();
+
+    customers = engine.readResource(
+        "/samples/customers-fixed.txt");
+
+    // retrieves customer 3 - Anderson Polga
+    Customer c = customers.get(2);
+    // changes a couple of properties
+    c.rating = 82;
+    c.stockSimbol = "APR";
+
+    // and removes first customer - Antonio Pereira
+    customers.remove(0);
+
+    // writes the output file
+    engine.writeFile("customers-fixed-out.txt", customers);
 
 As you may have already anticipated, the output file will look like this:
 
-	....|....1....|....2....|....3....|....4				
-	   2        Felipe Coury  201-01-2007   
+	....|....1....|....2....|....3....|....4
+	   2        Felipe Coury  201-01-2007
 	   3      Anderson Polga 8212-11-2007APR
 
 ## Examples ##
@@ -99,7 +96,7 @@ This library has the out-of-the-box ability to export and import values to/from 
 
 Take the following enum as an example:
 
-	public enum Enum2 { One, Two, Three }  
+	public enum Enum2 { One, Two, Three }
 
 If we have an input file containing the following lines:
 
@@ -108,35 +105,35 @@ If we have an input file containing the following lines:
 	Two
 	Three
 	Three
-	
+
 And a very simple bean like this:
 
-	@DelimitedRecord(",")  
-	public class EnumType2 {  
-	    public Enum2 enumValue;  
-	}  
-	
+	@DelimitedRecord(",")
+	public class EnumType2 {
+	    public Enum2 enumValue;
+	}
+
 It would be natural to write code for loading the file:
 
-	public static void main(String[] args) throws IOException {  
-	    FileHelperEngine engine =   
-	        new FileHelperEngine<EnumType2>(EnumType2.class);  
-	  
-	    List<EnumType2> res =   
-	        engine.readResource(  
-	            "/test/Good/EnumConverter2.txt");  
-	  
-	    System.out.println("Size: " + res.size());  
-	  
-	    System.out.println(  
-	        Enum2.One.equals(res.get(0).enumValue));  
-	    System.out.println(  
-	        Enum2.Two.equals(res.get(2).enumValue));  
-	    System.out.println(  
-	        Enum2.Three.equals(res.get(3).enumValue));  
-	    System.out.println(  
-	        Enum2.Three.equals(res.get(4).enumValue));  
-	}  
+	public static void main(String[] args) throws IOException {
+	    FileHelperEngine engine =
+	        new FileHelperEngine<EnumType2>(EnumType2.class);
+
+	    List<EnumType2> res =
+	        engine.readResource(
+	            "/test/Good/EnumConverter2.txt");
+
+	    System.out.println("Size: " + res.size());
+
+	    System.out.println(
+	        Enum2.One.equals(res.get(0).enumValue));
+	    System.out.println(
+	        Enum2.Two.equals(res.get(2).enumValue));
+	    System.out.println(
+	        Enum2.Three.equals(res.get(3).enumValue));
+	    System.out.println(
+	        Enum2.Three.equals(res.get(4).enumValue));
+	}
 
 ... and that would print out:
 
@@ -163,66 +160,66 @@ See how easy it is to handle master-detail formatted files:
 	10257|HILAA|4|16071996|13081996|22071996|3|81.91
 	10258|ERNSH|1|17071996|14081996|23071996|1|140.51
 	DUMON|Du monde entier|Janine Labrune|Owner|67, rue des Cinquante Otages|Nantes|France
-	
+
 To indicate what records are to be considered as master as what are to be considered as detail, we use the following code:
 
-	engine = new MasterDetailEngine<CustomersVerticalBar,   
-	    OrdersVerticalBar>(CustomersVerticalBar.class, OrdersVerticalBar.class,   
-	  
-	        new MasterDetailSelector() {  
-	  
-	            @Override  
-	            public RecordAction getRecordAction(String recordString) {  
-	                // if the first char on the record is a letter  
-	                // we'll consider it a master record and  
-	                // if not, we'll consider it a detail record  
-	                if (Character.isLetter(recordString.charAt(0)))  
-	                    return RecordAction.Master;  
-	                else  
-	                    return RecordAction.Detail;  
-	            }  
-	      
-	        });       
-	  
-	List<MasterDetails<CustomersVerticalBar, OrdersVerticalBar>> res =   
-	    (List<MasterDetails<CustomersVerticalBar, OrdersVerticalBar>>)   
-	        Common.readTest(engine, "Good/MasterDetail1.txt");  
+	engine = new MasterDetailEngine<CustomersVerticalBar,
+	    OrdersVerticalBar>(CustomersVerticalBar.class, OrdersVerticalBar.class,
+
+	        new MasterDetailSelector() {
+
+	            @Override
+	            public RecordAction getRecordAction(String recordString) {
+	                // if the first char on the record is a letter
+	                // we'll consider it a master record and
+	                // if not, we'll consider it a detail record
+	                if (Character.isLetter(recordString.charAt(0)))
+	                    return RecordAction.Master;
+	                else
+	                    return RecordAction.Detail;
+	            }
+
+	        });
+
+	List<MasterDetails<CustomersVerticalBar, OrdersVerticalBar>> res =
+	    (List<MasterDetails<CustomersVerticalBar, OrdersVerticalBar>>)
+	        Common.readTest(engine, "Good/MasterDetail1.txt");
 
 And here's how the beans are:
 
-	@DelimitedRecord("|")  
-	public class CustomersVerticalBar   
-	    implements ComparableRecord<CustomersVerticalBar> {  
-	      
-	    public String customerID;  
-	    public String companyName;  
-	    public String contactName;  
-	    public String contactTitle;  
-	    public String address;  
-	    public String city;  
-	    public String country;  
-	  
-	    @Override  
-	    public boolean equalsRecord(CustomersVerticalBar record) {  
-	        if (this.customerID == null) {  
-	            return false;  
-	        }  
-	        return this.customerID.equals(record);  
-	    }  
-	  
-	}  
+	@DelimitedRecord("|")
+	public class CustomersVerticalBar
+	    implements ComparableRecord<CustomersVerticalBar> {
 
-	@DelimitedRecord("|")  
-	public class OrdersVerticalBar {  
-	  
-	    public int orderID;  
-	    public String customerID;  
-	    public int employeeID;  
-	    public Date orderDate;  
-	    public Date requiredDate;         
-	    @FieldNullValue("2005-1-1")   
-	    public Date shippedDate;  
-	    public int shipVia;  
-	    public float freight;  
-	  
-	}     
+	    public String customerID;
+	    public String companyName;
+	    public String contactName;
+	    public String contactTitle;
+	    public String address;
+	    public String city;
+	    public String country;
+
+	    @Override
+	    public boolean equalsRecord(CustomersVerticalBar record) {
+	        if (this.customerID == null) {
+	            return false;
+	        }
+	        return this.customerID.equals(record);
+	    }
+
+	}
+
+	@DelimitedRecord("|")
+	public class OrdersVerticalBar {
+
+	    public int orderID;
+	    public String customerID;
+	    public int employeeID;
+	    public Date orderDate;
+	    public Date requiredDate;
+	    @FieldNullValue("2005-1-1")
+	    public Date shippedDate;
+	    public int shipVia;
+	    public float freight;
+
+	}
