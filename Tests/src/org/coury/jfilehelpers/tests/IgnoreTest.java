@@ -28,14 +28,31 @@ import junit.framework.TestCase;
 import org.coury.jfilehelpers.engines.FileHelperEngine;
 import org.coury.jfilehelpers.tests.common.Common;
 import org.coury.jfilehelpers.tests.converters.testobjects.SampleCustomer;
+import org.coury.jfilehelpers.tests.converters.testobjects.SampleCustomer2;
 
 public class IgnoreTest extends TestCase {
-	public void testIgnore() throws IOException {
+	public void testIgnoreBoth() throws IOException {
 		FileHelperEngine<SampleCustomer> engine = new FileHelperEngine<SampleCustomer>(SampleCustomer.class);
 
 		@SuppressWarnings("unchecked")
 		List<SampleCustomer> res =
 			(ArrayList<SampleCustomer>) Common.readTest(engine, "Data/customers.txt");
+
+		assertEquals(2, res.size());
+
+		assertEquals("Felipe Coury", res.get(0).name);
+		assertEquals("12", res.get(0).age);
+
+		assertEquals("Ana Maria", res.get(1).name);
+		assertEquals("8", res.get(1).age);
+	}
+
+	public void testIgnoreLast() throws IOException {
+		FileHelperEngine<SampleCustomer2> engine = new FileHelperEngine<SampleCustomer2>(SampleCustomer2.class);
+
+		@SuppressWarnings("unchecked")
+		List<SampleCustomer2> res =
+			(ArrayList<SampleCustomer2>) Common.readTest(engine, "Data/customers2.txt");
 
 		assertEquals(2, res.size());
 

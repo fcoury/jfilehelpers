@@ -36,6 +36,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(
 				"Test for org.coury.jfilehelpers.tests.converters");
 		//$JUnit-BEGIN$
+		suite.addTestSuite(IgnoreTest.class);
 		suite.addTestSuite(EnumConverterTest.class);
 		suite.addTestSuite(DateFormatTest.class);
 		suite.addTestSuite(DecimalNumbersTest.class);
