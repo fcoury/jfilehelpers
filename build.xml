@@ -1,6 +1,6 @@
 <project name="JFileHelpers" basedir="." default="junit">
 	
-	<property name="version" value="0.2a" />
+	<property name="version" value="0.3" />
 	<property name="dist" value="${basedir}/dist" />
 	<property name="build" value="${basedir}/bin" />
         <property name="lib" value="${basedir}/lib" />
@@ -30,7 +30,7 @@
 	</target>
 	
         <target name="compile" depends="init">
-               <javac destdir="${build}" classpath="${lib}/commons-lang-2.3.jar">
+               <javac destdir="${build}" classpath="${lib}/commons-lang-2.3.jar:${lib}/junit-4.4.jar">
                   <src path="${basedir}/Source/src" />
                   <src path="${basedir}/Tests/src" />
                   <src path="${basedir}/Samples/src" />
@@ -49,7 +49,7 @@
 	<target name="junit" depends="jars">
 	    <junit printsummary="on" fork="false">
 	      <formatter type="brief" />
-	      <classpath path="${dist}/jfilehelpers-${version}-${TODAY}.jar" />
+	      <classpath path="${dist}/jfilehelpers-${version}-${TODAY}.jar:${lib}/junit-4.4.jar" />
 	      <batchtest>
 	        <fileset  dir="${build}">
 	          <include name="org/coury/jfilehelpers/tests/**/*Test.class" />
