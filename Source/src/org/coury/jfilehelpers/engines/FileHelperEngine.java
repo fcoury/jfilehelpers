@@ -218,7 +218,9 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterable<T> {
             list = new ArrayList<T>();
             openStream(fileReader, maxRecords);
             for (T t : this) {
-                list.add(t);
+            	if (t != null) {
+            		list.add(t);
+            	}
             }
         } catch (IOException e) {
             throw e;
@@ -377,6 +379,9 @@ public class FileHelperEngine<T> extends EngineBase<T> implements Iterable<T> {
 		                if (!skip) {
 		                    record = recordInfo.strToRecord(line);
 		                    skip = onAfterReadRecord(currentLine, record);
+		                    if (skip) {
+		                    	record = null;
+		                    }
 		                }
 		                currentLine = freader.readNextLine();
 		                completeLine = currentLine;
