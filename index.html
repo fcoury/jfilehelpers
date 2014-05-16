@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Jfilehelpers by fcoury</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Jfilehelpers</h1>
+        <h2>JFileHelpers is a library that automates the tedious task of parsing and creating structured text files.</h2>
+        <a href="https://github.com/fcoury/jfilehelpers" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h2>
+<a name="what-is-jfilehelpers" class="anchor" href="#what-is-jfilehelpers"><span class="octicon octicon-link"></span></a>What is JFileHelpers?</h2>
+
+<p>Chances are every programmer will end up having to manipulate structured text files at any point in his career. Those files are called flat files and, until now, you had to go through that same boring script to work with them. You had to open the file, create a reader, then start reading and parsing line by line. No more.</p>
+
+<p>JFileHelpers is a library that automates the tedious task of parsing and creating structured text files. It handles fixed width or delimited files with Java annotations sweetness.</p>
+
+<p>JFileHelpers started as a port of the awesome Marcos Meli's FileHelpers but it's starting to take its own path and we are in need of passinate developers who would like to give us a hand.</p>
+
+<p>Go ahead and try it out!</p>
+
+<p>The latest binary release can always be found on the <a href="https://github.com/fcoury/jfilehelpers/releases">Releases</a> area.</p>
+
+<h2>
+<a name="so-whats-code-like" class="anchor" href="#so-whats-code-like"><span class="octicon octicon-link"></span></a>So what's code like?</h2>
+
+<p>Let's take, for instance, a fixed length structured text file, that handles customer data (you can see the ever-growing list of examples as well).</p>
+
+<p>Here's how our bean should be:</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@FixedLengthRecord</span><span class="o">()</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Customer</span> <span class="o">{</span>
+    <span class="nd">@FieldFixedLength</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">custId</span><span class="o">;</span>
+
+    <span class="nd">@FieldAlign</span><span class="o">(</span><span class="n">alignMode</span><span class="o">=</span><span class="n">AlignMode</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="nd">@FieldFixedLength</span><span class="o">(</span><span class="mi">20</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="nd">@FieldFixedLength</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">Integer</span> <span class="n">rating</span><span class="o">;</span>
+
+    <span class="nd">@FieldTrim</span><span class="o">(</span><span class="n">trimMode</span><span class="o">=</span><span class="n">TrimMode</span><span class="o">.</span><span class="na">Right</span><span class="o">)</span>
+    <span class="nd">@FieldFixedLength</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+    <span class="nd">@FieldConverter</span><span class="o">(</span><span class="n">converter</span> <span class="o">=</span> <span class="n">ConverterKind</span><span class="o">.</span><span class="na">Date</span><span class="o">,</span>
+        <span class="n">format</span> <span class="o">=</span> <span class="s">"dd-MM-yyyy"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">Date</span> <span class="n">addedDate</span><span class="o">;</span>
+
+    <span class="nd">@FieldFixedLength</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+    <span class="nd">@FieldOptional</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">stockSimbol</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>This could would handle a text file structured like this:</p>
+
+<pre><code>....|....1....|....2....|....3....|....4
+1   Antonio Pereira     10012-12-1978ABC
+2   Felipe Coury          201-01-2007
+3   Anderson Polga       4212-11-2007DEF
+</code></pre>
+
+<p>And reading that file is as easy as:</p>
+
+<div class="highlight highlight-java"><pre>  <span class="n">FileHelperEngine</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span> <span class="n">engine</span> <span class="o">=</span>
+      <span class="k">new</span> <span class="n">FileHelperEngine</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;(</span><span class="n">Customer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+  <span class="n">List</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span> <span class="n">customers</span> <span class="o">=</span>
+      <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;();</span>
+
+  <span class="n">customers</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="na">readResource</span><span class="o">(</span>
+      <span class="s">"/samples/customers-fixed.txt"</span><span class="o">);</span>
+</pre></div>
+
+<p>This way, you can manipulate any properties of the beans contained on the ArrayList collection and eventually, even recreate a file with same format, also as easy as:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">FileHelperEngine</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span> <span class="n">engine</span> <span class="o">=</span>
+    <span class="k">new</span> <span class="n">FileHelperEngine</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;(</span><span class="n">Customer</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="n">List</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span> <span class="n">customers</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;();</span>
+
+<span class="n">customers</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="na">readResource</span><span class="o">(</span>
+    <span class="s">"/samples/customers-fixed.txt"</span><span class="o">);</span>
+
+<span class="c1">// retrieves customer 3 - Anderson Polga</span>
+<span class="n">Customer</span> <span class="n">c</span> <span class="o">=</span> <span class="n">customers</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>
+<span class="c1">// changes a couple of properties</span>
+<span class="n">c</span><span class="o">.</span><span class="na">rating</span> <span class="o">=</span> <span class="mi">82</span><span class="o">;</span>
+<span class="n">c</span><span class="o">.</span><span class="na">stockSimbol</span> <span class="o">=</span> <span class="s">"APR"</span><span class="o">;</span>
+
+<span class="c1">// and removes first customer - Antonio Pereira</span>
+<span class="n">customers</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+
+<span class="c1">// writes the output file</span>
+<span class="n">engine</span><span class="o">.</span><span class="na">writeFile</span><span class="o">(</span><span class="s">"customers-fixed-out.txt"</span><span class="o">,</span> <span class="n">customers</span><span class="o">);</span>
+</pre></div>
+
+<p>As you may have already anticipated, the output file will look like this:</p>
+
+<pre><code>....|....1....|....2....|....3....|....4
+   2        Felipe Coury  201-01-2007
+   3      Anderson Polga 8212-11-2007APR
+</code></pre>
+
+<h2>
+<a name="examples" class="anchor" href="#examples"><span class="octicon octicon-link"></span></a>Examples</h2>
+
+<h3>
+<a name="enum-conversion" class="anchor" href="#enum-conversion"><span class="octicon octicon-link"></span></a>Enum conversion</h3>
+
+<p>This library has the out-of-the-box ability to export and import values to/from Java enum classes.</p>
+
+<p>Take the following enum as an example:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Enum2</span> <span class="o">{</span> <span class="n">One</span><span class="o">,</span> <span class="n">Two</span><span class="o">,</span> <span class="n">Three</span> <span class="o">}</span>
+</pre></div>
+
+<p>If we have an input file containing the following lines:</p>
+
+<pre><code>One
+one
+Two
+Three
+Three
+</code></pre>
+
+<p>And a very simple bean like this:</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@DelimitedRecord</span><span class="o">(</span><span class="s">","</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EnumType2</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">Enum2</span> <span class="n">enumValue</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>It would be natural to write code for loading the file:</p>
+
+<div class="highlight highlight-java"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+    <span class="n">FileHelperEngine</span> <span class="n">engine</span> <span class="o">=</span>
+        <span class="k">new</span> <span class="n">FileHelperEngine</span><span class="o">&lt;</span><span class="n">EnumType2</span><span class="o">&gt;(</span><span class="n">EnumType2</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">EnumType2</span><span class="o">&gt;</span> <span class="n">res</span> <span class="o">=</span>
+        <span class="n">engine</span><span class="o">.</span><span class="na">readResource</span><span class="o">(</span>
+            <span class="s">"/test/Good/EnumConverter2.txt"</span><span class="o">);</span>
+
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Size: "</span> <span class="o">+</span> <span class="n">res</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span>
+        <span class="n">Enum2</span><span class="o">.</span><span class="na">One</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">res</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">enumValue</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span>
+        <span class="n">Enum2</span><span class="o">.</span><span class="na">Two</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">res</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="na">enumValue</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span>
+        <span class="n">Enum2</span><span class="o">.</span><span class="na">Three</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">res</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">3</span><span class="o">).</span><span class="na">enumValue</span><span class="o">));</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span>
+        <span class="n">Enum2</span><span class="o">.</span><span class="na">Three</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">res</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="mi">4</span><span class="o">).</span><span class="na">enumValue</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>... and that would print out:</p>
+
+<pre><code>Size: 5
+true
+true
+true
+true
+</code></pre>
+
+<h3>
+<a name="master-detail" class="anchor" href="#master-detail"><span class="octicon octicon-link"></span></a>Master-detail</h3>
+
+<p>See how easy it is to handle master-detail formatted files:</p>
+
+<pre><code>ALFKI|Alfreds Futterkiste|Maria Anders|Sales Representative|Obere Str. 57|Berlin|Germany
+10248|VINET|5|04071996|01081996|16071996|3|32.38
+10249|TOMSP|6|05071996|16081996|10071996|1|11.61
+10250|HANAR|4|08071996|05081996|12071996|2|65.83
+10251|VICTE|3|08071996|05081996|15071996|1|41.34
+ANATR|Ana Trujillo Emparedados y helados|Ana Trujillo|Owner|Avda. de la Constitución 2222|México D.F.|Mexico
+10252|SUPRD|4|09071996|06081996|11071996|2|51.3
+10253|HANAR|3|10071996|24071996|16071996|2|58.17
+10254|CHOPS|5|11071996|08081996|23071996|2|22.98
+ANTON|Antonio Moreno Taquería|Antonio Moreno|Owner|Mataderos  2312|México D.F.|Mexico
+10257|HILAA|4|16071996|13081996|22071996|3|81.91
+10258|ERNSH|1|17071996|14081996|23071996|1|140.51
+DUMON|Du monde entier|Janine Labrune|Owner|67, rue des Cinquante Otages|Nantes|France
+</code></pre>
+
+<p>To indicate what records are to be considered as master as what are to be considered as detail, we use the following code:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">engine</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MasterDetailEngine</span><span class="o">&lt;</span><span class="n">CustomersVerticalBar</span><span class="o">,</span>
+    <span class="n">OrdersVerticalBar</span><span class="o">&gt;(</span><span class="n">CustomersVerticalBar</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">OrdersVerticalBar</span><span class="o">.</span><span class="na">class</span><span class="o">,</span>
+
+        <span class="k">new</span> <span class="nf">MasterDetailSelector</span><span class="o">()</span> <span class="o">{</span>
+
+            <span class="nd">@Override</span>
+            <span class="kd">public</span> <span class="n">RecordAction</span> <span class="nf">getRecordAction</span><span class="o">(</span><span class="n">String</span> <span class="n">recordString</span><span class="o">)</span> <span class="o">{</span>
+                <span class="c1">// if the first char on the record is a letter</span>
+                <span class="c1">// we'll consider it a master record and</span>
+                <span class="c1">// if not, we'll consider it a detail record</span>
+                <span class="k">if</span> <span class="o">(</span><span class="n">Character</span><span class="o">.</span><span class="na">isLetter</span><span class="o">(</span><span class="n">recordString</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)))</span>
+                    <span class="k">return</span> <span class="n">RecordAction</span><span class="o">.</span><span class="na">Master</span><span class="o">;</span>
+                <span class="k">else</span>
+                    <span class="k">return</span> <span class="n">RecordAction</span><span class="o">.</span><span class="na">Detail</span><span class="o">;</span>
+            <span class="o">}</span>
+
+        <span class="o">});</span>
+
+<span class="n">List</span><span class="o">&lt;</span><span class="n">MasterDetails</span><span class="o">&lt;</span><span class="n">CustomersVerticalBar</span><span class="o">,</span> <span class="n">OrdersVerticalBar</span><span class="o">&gt;&gt;</span> <span class="n">res</span> <span class="o">=</span>
+    <span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">MasterDetails</span><span class="o">&lt;</span><span class="n">CustomersVerticalBar</span><span class="o">,</span> <span class="n">OrdersVerticalBar</span><span class="o">&gt;&gt;)</span>
+        <span class="n">Common</span><span class="o">.</span><span class="na">readTest</span><span class="o">(</span><span class="n">engine</span><span class="o">,</span> <span class="s">"Good/MasterDetail1.txt"</span><span class="o">);</span>
+</pre></div>
+
+<p>And here's how the beans are:</p>
+
+<div class="highlight highlight-java"><pre><span class="nd">@DelimitedRecord</span><span class="o">(</span><span class="s">"|"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CustomersVerticalBar</span>
+    <span class="kd">implements</span> <span class="n">ComparableRecord</span><span class="o">&lt;</span><span class="n">CustomersVerticalBar</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">customerID</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">companyName</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">contactName</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">contactTitle</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">address</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">country</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equalsRecord</span><span class="o">(</span><span class="n">CustomersVerticalBar</span> <span class="n">record</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">customerID</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">customerID</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">record</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="nd">@DelimitedRecord</span><span class="o">(</span><span class="s">"|"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrdersVerticalBar</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">orderID</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="n">customerID</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">employeeID</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">Date</span> <span class="n">orderDate</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="n">Date</span> <span class="n">requiredDate</span><span class="o">;</span>
+    <span class="nd">@FieldNullValue</span><span class="o">(</span><span class="s">"2005-1-1"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">Date</span> <span class="n">shippedDate</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">shipVia</span><span class="o">;</span>
+    <span class="kd">public</span> <span class="kt">float</span> <span class="n">freight</span><span class="o">;</span>
+
+<span class="o">}</span>
+</pre></div>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/fcoury/jfilehelpers/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/fcoury/jfilehelpers/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/fcoury/jfilehelpers"></a> is maintained by <a href="https://github.com/fcoury">fcoury</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-51074431-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
