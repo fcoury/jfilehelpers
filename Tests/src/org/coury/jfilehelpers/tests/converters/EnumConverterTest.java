@@ -1,7 +1,7 @@
 /*
  * EnumConverterTest.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -32,16 +32,13 @@ import org.coury.jfilehelpers.tests.converters.testobjects.Enum2;
 import org.coury.jfilehelpers.tests.converters.testobjects.EnumType2;
 
 public class EnumConverterTest extends TestCase {
-	@SuppressWarnings("unchecked")
-	FileHelperEngine engine;
-	
 	public static void main(String[] args) {
 		System.out.println(Enum2.One.toString());
 	}
     
 	@SuppressWarnings("unchecked")
 	public void testEnumSingleCase() throws IOException {
-        engine = new FileHelperEngine<EnumType2>(EnumType2.class);
+		FileHelperEngine<EnumType2> engine = new FileHelperEngine<EnumType2>(EnumType2.class);
 
 		List<EnumType2> res = (ArrayList<EnumType2>) Common.readTest(engine, "Good/EnumConverter2.txt");
 

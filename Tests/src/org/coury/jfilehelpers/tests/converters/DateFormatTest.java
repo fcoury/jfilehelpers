@@ -1,7 +1,7 @@
 /*
  * DateFormatTest.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -35,11 +35,8 @@ import org.coury.jfilehelpers.tests.converters.testobjects.DateFormatType2;
 
 public class DateFormatTest extends TestCase {
 	@SuppressWarnings("unchecked")
-	FileHelperEngine engine;
-	
-	@SuppressWarnings("unchecked")
 	public void testDifferentSpanishFormat() throws IOException {
-		engine = new FileHelperEngine<DateFormatType1>(DateFormatType1.class);
+		FileHelperEngine<DateFormatType1> engine = new FileHelperEngine<DateFormatType1>(DateFormatType1.class);
 
 		List<DateFormatType1> res = (List<DateFormatType1>) Common.readTest(engine, "Good/DateFormat1.txt");
 		assertEquals(6, res.size());
@@ -62,7 +59,7 @@ public class DateFormatTest extends TestCase {
 	
 	@SuppressWarnings("unchecked")
 	public void testDifferentEnglishFormat() throws IOException {
-		engine = new FileHelperEngine<DateFormatType2>(DateFormatType2.class);
+		FileHelperEngine<DateFormatType2> engine = new FileHelperEngine<DateFormatType2>(DateFormatType2.class);
 
 		List<DateFormatType2> res = (List<DateFormatType2>) Common.readTest(engine, "Good/DateFormat2.txt");
 		assertEquals(6, res.size());
