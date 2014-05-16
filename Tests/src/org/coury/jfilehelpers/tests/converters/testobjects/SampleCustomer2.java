@@ -1,7 +1,7 @@
 /*
  * SampleCustomer.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe GonÔøΩalves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,7 +20,6 @@
 package org.coury.jfilehelpers.tests.converters.testobjects;
 
 import org.coury.jfilehelpers.annotations.DelimitedRecord;
-import org.coury.jfilehelpers.annotations.IgnoreFirst;
 import org.coury.jfilehelpers.annotations.IgnoreLast;
 
 

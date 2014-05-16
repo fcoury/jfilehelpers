@@ -20,16 +20,12 @@
 package org.coury.jfilehelpers.tests.converters.testobjects;
 
 import org.coury.jfilehelpers.annotations.DelimitedRecord;
-import org.coury.jfilehelpers.annotations.IgnoreCommentedLines;
 import org.coury.jfilehelpers.annotations.IgnoreFirst;
-import org.coury.jfilehelpers.annotations.IgnoreLast;
 
 
 @DelimitedRecord("|")
-@IgnoreFirst
-@IgnoreLast
-@IgnoreCommentedLines(commentMarker = "//")
-public class SampleCustomer {
+@IgnoreFirst(lines = 2)
+public class SampleCustomer3 {
 	public String name;
 	public String age;
 }

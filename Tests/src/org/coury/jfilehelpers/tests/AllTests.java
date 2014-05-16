@@ -19,6 +19,7 @@
  */
 package org.coury.jfilehelpers.tests;
 
+import org.coury.jfilehelpers.tests.annotations.IgnoreTest;
 import org.coury.jfilehelpers.tests.callbacks.EventsTest;
 import org.coury.jfilehelpers.tests.callbacks.NotifiersTest;
 import org.coury.jfilehelpers.tests.callbacks.ProgressTest;
