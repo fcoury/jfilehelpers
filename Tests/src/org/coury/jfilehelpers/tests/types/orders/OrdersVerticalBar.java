@@ -1,7 +1,7 @@
 /*
  * OrdersVerticalBar.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -36,5 +36,18 @@ public class OrdersVerticalBar {
 	public Date shippedDate;
 	public int shipVia;
 	public float freight;
+	
+	
+	
+	
+	@Override
+	public String toString() {
+		return "OrdersVerticalBar [orderID=" + orderID + ", customerID=" + customerID + ", employeeID=" + employeeID
+				+ ", orderDate=" + orderDate + ", requiredDate=" + requiredDate + ", shippedDate=" + shippedDate
+				+ ", shipVia=" + shipVia + ", freight=" + freight + "]";
+	}
 
+	
+	
+	
 }
