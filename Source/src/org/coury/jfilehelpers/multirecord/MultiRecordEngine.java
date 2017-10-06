@@ -20,17 +20,19 @@
 package org.coury.jfilehelpers.multirecord;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.coury.jfilehelpers.core.ForwardReader;
 import org.coury.jfilehelpers.core.RecordInfo;
 import org.coury.jfilehelpers.engines.LineInfo;
+import org.coury.jfilehelpers.helpers.StringHelper;
 public class MultiRecordEngine {
 
 	
@@ -38,8 +40,6 @@ public class MultiRecordEngine {
 	private Map<Class<?>, String> selector;
 	private List<Object> multiRecordList;
 	private LineInfo lineInfo;
-	private String line = null;
-
 	
 	public MultiRecordEngine(Class<?>[] params, Map<Class<?>, String> selector) {
 		this.setParams(params);
@@ -49,22 +49,64 @@ public class MultiRecordEngine {
 	
 	
 	
+	
+	public void writeFile(String fileName, List<Object> records, int maxRecords) throws IOException {
+		FileWriter fw = null;
+		try {
+			fw = new FileWriter(new File(fileName));
+			writeStream(fw, records, maxRecords);
+		}
+		finally {
+			if (fw != null) {
+				fw.flush();
+				fw.close();
+			}
+		}
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	private void writeStream(OutputStreamWriter osr, List<Object> records, int maxRecords) throws IOException {
+		
+		BufferedWriter writer = new BufferedWriter(osr);
+			
+			records.forEach(record -> {
+					
+					selector.forEach((classe, selector) -> {
+						if(record.getClass().equals(classe) ) {
+							RecordInfo recordinfo = new RecordInfo<>(classe);
+							try {
+								writer.write( recordinfo.recordToStr(recordinfo.convertObjectToGenertics(record)) + StringHelper.NEW_LINE);
+							} catch (IllegalArgumentException | IllegalAccessException | IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+						}
+						
+					});
+				
+			});
+			writer.flush();
+
+	
+	
+	}
+	
+	
 	private List<Object> readStream(InputStreamReader fileReader) throws IOException {
 		BufferedReader reader = new BufferedReader(fileReader);
-		ForwardReader forwardReader = new ForwardReader(reader);
-		while((line = forwardReader.readNextLine()) != null) {
-			
+		reader.lines().forEach(line -> {
 			selector.forEach((classe, seletor) -> {
-			
+
 				if(line.contains(seletor)) {
 					lineInfo = new LineInfo(line);
 					multiRecordList.add(new RecordInfo<>(classe).strToRecord(lineInfo));
-					System.out.println(multiRecordList.size());
 					return;
 				}
-			});
-			
-		}
+		});
+		
+		});
 		return multiRecordList;
 	}
 	

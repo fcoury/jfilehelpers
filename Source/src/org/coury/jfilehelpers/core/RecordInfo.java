@@ -217,6 +217,12 @@ public final class RecordInfo<T> {
 			return recordConstructor.newInstance(parameter);
 		}
 	}
+	
+	
+	
+	public T convertObjectToGenertics(Object o) {
+		return (T)o;
+	}
 		
 	/**
 	 * Verifies if current line should be ignored
