@@ -63,6 +63,7 @@ public class MultiRecordTest extends TestCase {
 		
 		
 		
+		
 		CustomersVerticalBarVirgula cusmer1 = new CustomersVerticalBarVirgula();
 		cusmer1.address = "adress01";
 		cusmer1.city = "city01";

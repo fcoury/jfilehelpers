@@ -66,7 +66,6 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		final CommonInternalSelector sel = new CommonInternalSelector(action, selector, masterInfo.isIgnoreEmptyLines() || recordInfo.isIgnoreEmptyLines());
 		
 		this.recordSelector = new MasterDetailSelector() {
-
 			@Override
 			public RecordAction getRecordAction(String recordString) {
 				return sel.getCommonSelectorMethod(recordString);			

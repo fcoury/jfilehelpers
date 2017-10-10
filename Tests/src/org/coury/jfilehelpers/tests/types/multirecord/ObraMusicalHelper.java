@@ -24,7 +24,7 @@ import org.coury.jfilehelpers.annotations.FieldOptional;
 import org.coury.jfilehelpers.annotations.FixedLengthRecord;
 import org.coury.jfilehelpers.enums.FixedMode;
 
-@FixedLengthRecord(fixedMode= FixedMode.AllowLessChars)
+@FixedLengthRecord(fixedMode= FixedMode.AllowVariableLength)
 public class ObraMusicalHelper {
 
 	
@@ -37,55 +37,79 @@ public class ObraMusicalHelper {
 	@FieldFixedLength(95)
 	private String tituloprincipal;
 	@FieldFixedLength(1)
+	@FieldOptional
 	private String enacional;
 	@FieldFixedLength(1)
+	@FieldOptional
 	private String einstrumental;
 	@FieldFixedLength(1)
+	@FieldOptional
 	private String edominiopublico;
 	@FieldFixedLength(8)
+	@FieldOptional
 	private String dtregistroobra;
+	@FieldOptional
 	@FieldFixedLength(8)
 	private String dtemissao;
+	@FieldOptional
 	@FieldFixedLength(8)
 	private String dtcriacao;
+	@FieldOptional
 	@FieldFixedLength(11)
 	private String codiswc;
+	@FieldOptional
 	@FieldFixedLength(6)
 	private String duracao;
+	@FieldOptional
 	@FieldFixedLength(2)
 	private String siglapais;
+	@FieldOptional
 	@FieldFixedLength(10)
 	private String codgeneromusical;
+	@FieldOptional
 	@FieldFixedLength(1)
 	private String temregravarsoval;
+	@FieldOptional
 	@FieldFixedLength(1)
 	private String ehomonima;
 	@FieldFixedLength(1)
+	@FieldOptional
 	private String eobraderivada;
+	@FieldOptional
 	@FieldFixedLength(13)
 	private String codecadobraoriginal;
+	@FieldOptional
 	@FieldFixedLength(15)
 	private String codsocietarioobraoriginal;
+	@FieldOptional
 	@FieldFixedLength(2)
 	private String siglaidioma;
+	@FieldOptional
 	@FieldFixedLength(1)
 	private String eobracomposta;
 	@FieldFixedLength(3)
+	@FieldOptional
 	private String codtipoobracomposta;
+	@FieldOptional
 	@FieldFixedLength(22)
 	private String sociedaderesponsavel;
+	@FieldOptional
 	@FieldFixedLength(22)
 	private String sociedaderesponsavelcadastro;
+	@FieldOptional
 	@FieldFixedLength(2)
 	private String situacaocadastral;
+	@FieldOptional
 	@FieldFixedLength(1)
 	private String ebloqueada;
+	@FieldOptional
 	@FieldFixedLength(30)
 	private String nomegenero;
 
 	
 	public ObraMusicalHelper() {
 	
+		
 	}
 	
 	

@@ -19,15 +19,12 @@
  */
 package org.coury.jfilehelpers.tests.masterdetailmultirecord;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.coury.jfilehelpers.masterdetail.MasterDetailSelector;
-import org.coury.jfilehelpers.masterdetail.MasterDetails;
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordEngine;
-import org.coury.jfilehelpers.tests.types.customers.CustomersVerticalBar;
+import org.coury.jfilehelpers.tests.types.customers.CustomersVerticalBarVirgula;
 import org.coury.jfilehelpers.tests.types.multirecord.ObraMusicalHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.TitularHelper;
 import org.coury.jfilehelpers.tests.types.orders.OrdersVerticalBar;
@@ -37,58 +34,58 @@ import junit.framework.TestCase;
 public class MasterDetailMultiRecordTest extends TestCase {
 
 	public void testMasterDetailMultiRecord() throws Exception {
-		
-		List<MasterDetails<?, ?>> listofmasterdetails = new ArrayList<>();
-		Map<MasterDetails<?, ?>, MasterDetailSelector> selectors = new HashMap<>();
 
 		
+
+	MasterDetailSelector selector =	  new MasterDetailSelector() {
 		
-		MasterDetails<TitularHelper, ObraMusicalHelper> md = new MasterDetails<TitularHelper, ObraMusicalHelper>();
-		MasterDetails<CustomersVerticalBar, OrdersVerticalBar> md2 = new MasterDetails<CustomersVerticalBar, OrdersVerticalBar>();
-		
-				
-		
-		selectors.put(md, new MasterDetailSelector() {
 			@Override
 			public RecordAction getRecordAction(String recordString) {
-				if(recordString.contains("TIT1")){
-						return RecordAction.Master;
-				}else if(recordString.contains("TIT2")){
-						return RecordAction.Detail;	
+				if (recordString.contains("TIT1")) {
+					return RecordAction.Master;
+				} else if (recordString.contains("TIT2")) {
+					return RecordAction.Detail;
+				} else if (recordString.contains("TIT3")) {
+					return RecordAction.Detail;
+				} else if (recordString.contains("TIT4")) {
+					return RecordAction.Detail;
 				}
 				return RecordAction.Skip;
 			}
-		});
+		};
+		
+		Map<Class<?>[], MasterDetailSelector> masterDetail = new HashMap<>();
+		
+		masterDetail.put(new Class<?>[] {TitularHelper.class, 
+										 ObraMusicalHelper.class}, selector);
+		
+		
+		
 		
 
-		selectors.put(md2, new MasterDetailSelector() {
+		 MasterDetailSelector selector2 = new MasterDetailSelector() {
 			@Override
 			public RecordAction getRecordAction(String recordString) {
-				if(recordString.contains(";")){
-						return RecordAction.Master;
-				}else if(recordString.contains("|")){
-						return RecordAction.Detail;	
+				if (recordString.contains(";")) {
+					return RecordAction.Master;
+				} else if (recordString.contains("|")) {
+					return RecordAction.Detail;
 				}
 				return RecordAction.Skip;
 			}
-		});
+		};
+		
+		
+		
+		masterDetail.put(new Class<?>[] {CustomersVerticalBarVirgula.class, 
+										 OrdersVerticalBar.class}, selector2);
+
+		
 	
-		
-		
-		
-		listofmasterdetails.add(md);
-		listofmasterdetails.add(md2);
-		
-		
-		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(listofmasterdetails, selectors);
-	
-	
-	
+		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(masterDetail);
+
 		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/9QZ0000000001.IMP");
-	
-		
-		
-		
+
 	}
 
 }

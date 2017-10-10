@@ -24,24 +24,28 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.coury.jfilehelpers.core.RecordInfo;
+import org.coury.jfilehelpers.engines.LineInfo;
 import org.coury.jfilehelpers.masterdetail.MasterDetailSelector;
 import org.coury.jfilehelpers.masterdetail.MasterDetails;
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 
 public class MasterDetailMultiRecordEngine {
 
-	private List<MasterDetails<?,?>> internallistofmasterdetails;
-	private List<MasterDetails<?,?>> externalofmasterdetails;
-	private Map<MasterDetails<?, ?>, MasterDetailSelector> selectors;
+	private Map<Class<?>[], MasterDetailSelector> externalofmasterdetails;
+	private MasterDetails  masterdetailentity;
+	private List<MasterDetails> list = new ArrayList<>();
+
 	
-	public MasterDetailMultiRecordEngine(List<MasterDetails<?,?>> externalofmasterdetails, Map<MasterDetails<?, ?>, MasterDetailSelector> selectors) {
-		internallistofmasterdetails = new ArrayList<>();
+	public MasterDetailMultiRecordEngine(Map<Class<?>[], MasterDetailSelector> externalofmasterdetails) {
 		this.externalofmasterdetails = externalofmasterdetails;
-		this.selectors = selectors;
 		
 	}
 	
@@ -58,7 +62,7 @@ public class MasterDetailMultiRecordEngine {
 			}
 		}
 		
-		return internallistofmasterdetails;
+		return null;
 	}
 	
 
@@ -67,47 +71,101 @@ public class MasterDetailMultiRecordEngine {
 	
 	private List<MasterDetails<?, ?>> readStream(InputStreamReader fileReader) throws IOException {
 		BufferedReader reader = new BufferedReader(fileReader);
+		masterdetailentity = null;
 		reader.lines().forEach(line -> {
-			selectors.forEach((inForMasterdetail, inForSelector) -> {
-					externalofmasterdetails.forEach(action ->{
-							if( inForMasterdetail == action ) {
-										RecordAction tes = inForSelector.getRecordAction(line);
-										switch (tes) {
-										case Master:
-											System.out.println("MASTER: " +  line);
-											return;
-										case Detail:
-											System.out.println("DETAIL: " +  line);
-											return;
-										case Skip:
-											return;
-										default:
-											break;
-										}
-							}
-					});
+
+			externalofmasterdetails.forEach((masterdetail, seletor) -> {
+				
+				LineInfo info = new LineInfo(line);	 
+				RecordAction action = seletor.getRecordAction(line);
+				
+				switch (action) {
+					case Master:
+						System.out.println(line);
+							try {
+							masterdetailentity = gerarMaster(masterdetail);
+							masterdetailentity.setMaster(new RecordInfo<>(masterdetail[0].newInstance().getClass()).strToRecord(info));
+							list.add(masterdetailentity);
+							
+							} catch (InstantiationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+							break;
+					case Detail:
+						try {
+							masterdetailentity.getDetails().add(new RecordInfo<>( masterdetail[1].newInstance().getClass() ).strToRecord(info));
+						} catch (InstantiationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						break;
+					case Skip:
+						break;
+					default: 
+						break;
+					}
+					
 				
 			});
+
 			
 		});
+
+		list.forEach(a -> {
+			
+			System.out.println(a.getMaster() + "  "+ a.getDetails().size());
+		});
 		
+		return null;
+	}
+
+
+	private MasterDetails gerarMaster(Class<?>[] masterdetail) {
+		MasterDetails masterdetailentity = new MasterDetails<>();
+		try {
+			masterdetailentity.setMaster(masterdetail[0].newInstance());
+			masterdetailentity.addDetails(new ArrayList<>());
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return masterdetailentity;
+	}
+
+
+
+	private MasterDetails gerarMasterDetails() {
+		List details = new ArrayList<>();
+		MasterDetails<?, ?> mt = new MasterDetails();
+		mt.addDetails(details);
+		return mt;
+	}
+
+
+	private MasterDetails gerarDetail(String line, MasterDetails mt) {
+		LineInfo info = new LineInfo(line);
+		mt.getDetails().add(new RecordInfo<>(mt.getDetail().getClass()).strToRecord(info));
+		return mt;
+	}
+
+
+	private  MasterDetails gerarMaster(String line, MasterDetails mt) {
+		LineInfo info = new LineInfo(line);
+
 		
-	return internallistofmasterdetails;
+		mt.setMaster(new RecordInfo<>(mt.getMaster().getClass()).strToRecord(info));
+		return mt;
+		
 	}
 
 
 
-	public List<MasterDetails<?, ?>> getInternallistofmasterdetails() {
-		return internallistofmasterdetails;
-	}
-
-
-
-	public void setInternallistofmasterdetails(List<MasterDetails<?, ?>> internallistofmasterdetails) {
-		this.internallistofmasterdetails = internallistofmasterdetails;
-	}
-	
-	
 	
 	
 	

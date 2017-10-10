@@ -38,6 +38,7 @@ public class TitularHelper {
 	@FieldFixedLength(45)
 	private String nome;
 	@FieldFixedLength(1)
+	@FieldOptional
 	private String enacional;
 	@FieldFixedLength(8)
 	private String dtnascimento;
