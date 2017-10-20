@@ -25,6 +25,7 @@ import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordEngine;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordFluentImplement;
 import org.coury.jfilehelpers.tests.types.multirecord.LocalizacaoEDocumentacaoHelper;
+import org.coury.jfilehelpers.tests.types.multirecord.ObraMusicalHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.PseudonimoHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.TitularHelper;
 
@@ -35,12 +36,13 @@ public class MasterDetailMultiRecordTest extends TestCase {
 	public void testMasterDetailMultiRecord() throws Exception {
 
 		MasterDetailMultiRecordFluentImplement fluent = new MasterDetailMultiRecordFluentImplement();
-		
 		fluent
 		.addMaster(TitularHelper.class, setSelector("TIT1", RecordAction.Master))
 		.addDetail(LocalizacaoEDocumentacaoHelper.class, setSelector("TIT2", RecordAction.Detail))
-		.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail));
-		
+		.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail))
+		.addTraillerTransaction(Object.class, setSelector("9TIT", RecordAction.TraillerTransaction))
+		.addHeaderTransaction(ObraMusicalHelper.class, setSelector("0TIT", RecordAction.HeaderTransaction));
+			
 		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(fluent);
 		
 		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/9QZ0000000001.IMP");

@@ -20,7 +20,7 @@
 package org.coury.jfilehelpers.masterdetail;
 
 public interface RecordActionSelector {
-	public RecordAction getRecordAction(String recordString);
+	public  RecordAction getRecordAction(String recordString);
 
 	default RecordActionSelector setSelector(String token) {
 		return new RecordActionSelector() {

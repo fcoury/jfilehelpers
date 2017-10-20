@@ -35,13 +35,16 @@ import java.util.stream.Collectors;
 import org.coury.jfilehelpers.core.RecordInfo;
 import org.coury.jfilehelpers.engines.LineInfo;
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
+
+import sun.swing.SwingUtilities2.Section;
+
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 
 public class MasterDetailMultiRecordEngine {
 
 	private MasterDetailMultiRecordFluentImplement fluent;
 	
-
+	private RecordActionSelector seletor;
 	
 	public MasterDetailMultiRecordEngine(MasterDetailMultiRecordFluentImplement fluent) {
 		this.fluent = fluent;
@@ -51,7 +54,6 @@ public class MasterDetailMultiRecordEngine {
 	private List<MasterDetailMultiRecord> readStream(InputStreamReader fileReader) {
 		BufferedReader reader = new BufferedReader(fileReader);
 		reader.lines().forEach(line -> {
-			
 			RecordAction action = checkRegisterType(line);
 			System.out.println(action);
 			switch (action) {
@@ -100,20 +102,19 @@ public class MasterDetailMultiRecordEngine {
 	}
 
 	private RecordAction checkRegisterType(String line) {
-	   fluent.getMapper().values().forEach(action -> {
-		   	extractLine(action, line);
-	   });
-	return RecordAction.Skip;
+		seletor = fluent.getMapper()
+			  .values()
+			  .stream()
+			  .filter(action -> action.getRecordAction(line) != RecordAction.Skip)
+			  .findFirst()
+			  .orElse(null);
+		if(seletor == null)
+			return RecordAction.Skip;
+		return seletor.getRecordAction(line);
 	}
 	
 
-	private void extractLine(RecordActionSelector action, String line) {
-	
-		System.out.println( action.getRecordAction(line) );
-	
-	}
-	
-	
+
 
 	public List<MasterDetailMultiRecord> readFile(String fileName) throws IOException {
 		List<MasterDetailMultiRecord> result;
