@@ -35,9 +35,15 @@ public class MasterDetailMultiRecordTest extends TestCase {
 	public void testMasterDetailMultiRecord() throws Exception {
 
 		MasterDetailMultiRecordFluentImplement fluent = new MasterDetailMultiRecordFluentImplement();
-		fluent.addMaster(TitularHelper.class, setSelector("TIT1", RecordAction.Master));
-		fluent.addDetail(LocalizacaoEDocumentacaoHelper.class, setSelector("TIT2", RecordAction.Detail));
-		fluent.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail));
+		
+		fluent
+		.addMaster(TitularHelper.class, setSelector("TIT1", RecordAction.Master))
+		.addDetail(LocalizacaoEDocumentacaoHelper.class, setSelector("TIT2", RecordAction.Detail))
+		.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail));
+		
+		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(fluent);
+		
+		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/9QZ0000000001.IMP");
 		
 	}
 

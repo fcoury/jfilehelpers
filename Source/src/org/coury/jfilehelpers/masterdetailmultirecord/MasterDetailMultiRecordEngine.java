@@ -101,14 +101,16 @@ public class MasterDetailMultiRecordEngine {
 
 	private RecordAction checkRegisterType(String line) {
 	   fluent.getMapper().values().forEach(action -> {
-		   	checkLine(action, line);
+		   	extractLine(action, line);
 	   });
 	return RecordAction.Skip;
 	}
 	
 
-	private void checkLine(RecordActionSelector action, String line) {
-		System.out.println(action.getRecordAction(line));
+	private void extractLine(RecordActionSelector action, String line) {
+	
+		System.out.println( action.getRecordAction(line) );
+	
 	}
 	
 	
