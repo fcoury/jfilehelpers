@@ -1,5 +1,5 @@
 /*
- * MasterDetailMultiRecord.java
+ * MasterDetailMultiRecordFluent.java
  *
  * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
  * 
@@ -19,38 +19,17 @@
  */
 package org.coury.jfilehelpers.masterdetailmultirecord;
 
-import java.util.List;
-import java.util.Map;
+import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 
+public interface MasterDetailMultiRecordFluent {
 
-
-public class MasterDetailMultiRecord {
-
-	private Map<Object, List<?>> masterDetailMultiRecod;
-	
-	
-	public MasterDetailMultiRecord() {	
-		
-	}
+	public <T> MasterDetailMultiRecordFluent addHeaderFile(Class<T> clazz, RecordActionSelector action);
+	public <T> MasterDetailMultiRecordFluent addHeaderTransaction(Class<T> clazz,RecordActionSelector action);
+	public <T> MasterDetailMultiRecordFluent addMaster(Class<T> clazz,RecordActionSelector action);
+	public <T> MasterDetailMultiRecordFluent addDetail(Class<T> clazz,RecordActionSelector action);
+	public <T> MasterDetailMultiRecordFluent addTraillerTransaction(Class<T> clazz,RecordActionSelector action);
+	public <T> MasterDetailMultiRecordFluent addTraillerFile(Class<T> clazz,RecordActionSelector action);
 	
 	
 	
-	
-	
-	public Map<?, List<?>> getMasterDetailMultiRecod() {
-		return masterDetailMultiRecod;
-	}
-
-	public void setMasterDetailMultiRecod(Map<Object, List<?>> masterDetailMultiRecod) {
-		this.masterDetailMultiRecod = masterDetailMultiRecod;
-	}	
-	
-	
-	
-	public <T> void addMasterDetailMultiRecord(T master, List<?> details) {
-		masterDetailMultiRecod.put(master, details);
-	}
-	
-	
-
 }

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.coury.jfilehelpers.core.RecordInfo;
@@ -54,6 +55,7 @@ public class MultiRecordEngine {
 	public void writeFile(String fileName, List<Object> records, int maxRecords) throws IOException {
 		FileWriter fw = null;
 		try {
+			
 			fw = new FileWriter(new File(fileName));
 			writeStream(fw, records, maxRecords);
 		}
@@ -112,7 +114,7 @@ public class MultiRecordEngine {
 	}
 	
 	
-	public List<Object>  readFile(String fileName) throws IOException {
+	public List<Object> readFile(String fileName) throws IOException {
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(fileName));

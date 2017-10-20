@@ -19,15 +19,14 @@
  */
 package org.coury.jfilehelpers.tests.masterdetailmultirecord;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.coury.jfilehelpers.masterdetail.MasterDetailSelector;
+
 import org.coury.jfilehelpers.masterdetail.RecordAction;
+import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordEngine;
-import org.coury.jfilehelpers.tests.types.customers.CustomersVerticalBarVirgula;
-import org.coury.jfilehelpers.tests.types.multirecord.ObraMusicalHelper;
+import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordFluentImplement;
+import org.coury.jfilehelpers.tests.types.multirecord.LocalizacaoEDocumentacaoHelper;
+import org.coury.jfilehelpers.tests.types.multirecord.PseudonimoHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.TitularHelper;
-import org.coury.jfilehelpers.tests.types.orders.OrdersVerticalBar;
 
 import junit.framework.TestCase;
 
@@ -35,57 +34,23 @@ public class MasterDetailMultiRecordTest extends TestCase {
 
 	public void testMasterDetailMultiRecord() throws Exception {
 
+		MasterDetailMultiRecordFluentImplement fluent = new MasterDetailMultiRecordFluentImplement();
+		fluent.addMaster(TitularHelper.class, setSelector("TIT1", RecordAction.Master));
+		fluent.addDetail(LocalizacaoEDocumentacaoHelper.class, setSelector("TIT2", RecordAction.Detail));
+		fluent.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail));
 		
-
-	MasterDetailSelector selector =	  new MasterDetailSelector() {
-		
-			@Override
-			public RecordAction getRecordAction(String recordString) {
-				if (recordString.contains("TIT1")) {
-					return RecordAction.Master;
-				} else if (recordString.contains("TIT2")) {
-					return RecordAction.Detail;
-				} else if (recordString.contains("TIT3")) {
-					return RecordAction.Detail;
-				} else if (recordString.contains("TIT4")) {
-					return RecordAction.Detail;
-				}
-				return RecordAction.Skip;
-			}
-		};
-		
-		Map<Class<?>[], MasterDetailSelector> masterDetail = new HashMap<>();
-		
-		masterDetail.put(new Class<?>[] {TitularHelper.class, 
-										 ObraMusicalHelper.class}, selector);
-		
-		
-		
-		
-
-		 MasterDetailSelector selector2 = new MasterDetailSelector() {
-			@Override
-			public RecordAction getRecordAction(String recordString) {
-				if (recordString.contains(";")) {
-					return RecordAction.Master;
-				} else if (recordString.contains("|")) {
-					return RecordAction.Detail;
-				}
-				return RecordAction.Skip;
-			}
-		};
-		
-		
-		
-		masterDetail.put(new Class<?>[] {CustomersVerticalBarVirgula.class, 
-										 OrdersVerticalBar.class}, selector2);
-
-		
-	
-		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(masterDetail);
-
-		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/9QZ0000000001.IMP");
-
 	}
 
+	private RecordActionSelector setSelector(String token, RecordAction action) {
+		return new RecordActionSelector() {
+			@Override
+			public RecordAction getRecordAction(String recordString) {
+				if(recordString.contains(token))
+				return action;
+			return RecordAction.Skip;
+			}
+		};
+	}
+	
+	
 }

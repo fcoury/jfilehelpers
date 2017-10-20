@@ -1,7 +1,7 @@
 /*
  * MasterDetailTest.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.coury.jfilehelpers.masterdetail.MasterDetailEngine;
-import org.coury.jfilehelpers.masterdetail.MasterDetailSelector;
+import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetail.MasterDetails;
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 import org.coury.jfilehelpers.tests.common.Common;
@@ -38,7 +38,7 @@ public class MasterDetailTest extends TestCase {
 	@SuppressWarnings("unchecked")
 	public void testCustomersOrderRead() throws IOException {
 		engine = new MasterDetailEngine<CustomersVerticalBar, OrdersVerticalBar>(CustomersVerticalBar.class, OrdersVerticalBar.class, 
-				new MasterDetailSelector() {
+				new RecordActionSelector() {
 
 					@Override
 					public RecordAction getRecordAction(String recordString) {

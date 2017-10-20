@@ -19,14 +19,22 @@
  */
 package org.coury.jfilehelpers.tests.types.multirecord;
 
+import java.io.Serializable;
+
 import org.coury.jfilehelpers.annotations.FieldFixedLength;
+import org.coury.jfilehelpers.annotations.FieldIgnored;
 import org.coury.jfilehelpers.annotations.FieldOptional;
 import org.coury.jfilehelpers.annotations.FixedLengthRecord;
 import org.coury.jfilehelpers.enums.FixedMode;
 
 @FixedLengthRecord(fixedMode = FixedMode.AllowLessChars)
-public class TitularHelper {
+public class TitularHelper implements Serializable{
 
+	/**
+	 * 
+	 */
+	@FieldIgnored
+	private static final long serialVersionUID = 2794738679598309411L;
 	@FieldFixedLength(8)
 	private String campodecontrole;
 	@FieldFixedLength(13)
@@ -81,7 +89,8 @@ public class TitularHelper {
 	@FieldFixedLength(2)
 	@FieldOptional
 	private String radicalifpi;
-
+	
+	
 	
 	
 	public TitularHelper() {
