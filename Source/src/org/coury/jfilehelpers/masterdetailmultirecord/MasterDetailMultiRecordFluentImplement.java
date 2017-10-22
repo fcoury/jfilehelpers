@@ -19,7 +19,7 @@
  */
 package org.coury.jfilehelpers.masterdetailmultirecord;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 
@@ -30,7 +30,7 @@ public class MasterDetailMultiRecordFluentImplement implements MasterDetailMulti
 	
 	
 	public MasterDetailMultiRecordFluentImplement() {
-		mapper = new HashMap<>();
+		mapper = new LinkedHashMap<>();
 	}
 	
 	@Override

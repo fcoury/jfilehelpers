@@ -20,32 +20,60 @@
 package org.coury.jfilehelpers.tests.masterdetailmultirecord;
 
 
+
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordEngine;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordFluentImplement;
+import org.coury.jfilehelpers.tests.types.multirecord.Fonograma;
+import org.coury.jfilehelpers.tests.types.multirecord.HeaderFonograma;
+import org.coury.jfilehelpers.tests.types.multirecord.HeaderObra;
+import org.coury.jfilehelpers.tests.types.multirecord.HeaderTitular;
+import org.coury.jfilehelpers.tests.types.multirecord.InstrumentosFonograma;
 import org.coury.jfilehelpers.tests.types.multirecord.LocalizacaoEDocumentacaoHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.ObraMusicalHelper;
 import org.coury.jfilehelpers.tests.types.multirecord.PseudonimoHelper;
+import org.coury.jfilehelpers.tests.types.multirecord.SubTitulo;
 import org.coury.jfilehelpers.tests.types.multirecord.TitularHelper;
+import org.coury.jfilehelpers.tests.types.multirecord.TitularesFonograma;
+import org.coury.jfilehelpers.tests.types.multirecord.TitularesObra;
+import org.coury.jfilehelpers.tests.types.multirecord.TraillerFonograma;
+import org.coury.jfilehelpers.tests.types.multirecord.TraillerObra;
+import org.coury.jfilehelpers.tests.types.multirecord.TraillerTitular;
 
 import junit.framework.TestCase;
 
 public class MasterDetailMultiRecordTest extends TestCase {
 
+	
+	
 	public void testMasterDetailMultiRecord() throws Exception {
 
 		MasterDetailMultiRecordFluentImplement fluent = new MasterDetailMultiRecordFluentImplement();
+		//Titulares
 		fluent
+		.addHeaderTransaction(HeaderTitular.class, setSelector("0TIT", RecordAction.HeaderTransaction))
 		.addMaster(TitularHelper.class, setSelector("TIT1", RecordAction.Master))
 		.addDetail(LocalizacaoEDocumentacaoHelper.class, setSelector("TIT2", RecordAction.Detail))
 		.addDetail(PseudonimoHelper.class, setSelector("TIT4", RecordAction.Detail))
-		.addTraillerTransaction(Object.class, setSelector("9TIT", RecordAction.TraillerTransaction))
-		.addHeaderTransaction(ObraMusicalHelper.class, setSelector("0TIT", RecordAction.HeaderTransaction));
-			
-		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(fluent);
+		.addTraillerTransaction(TraillerTitular.class, setSelector("9TIT", RecordAction.TraillerTransaction))
+		//Obra
+		.addHeaderTransaction(HeaderObra.class, setSelector("0OBM", RecordAction.HeaderTransaction))
+		.addMaster(ObraMusicalHelper.class, setSelector("OBM1", RecordAction.Master))
+		.addDetail(TitularesObra.class, setSelector("OBM2", RecordAction.Detail))
+		.addDetail(SubTitulo.class, setSelector("OBM3", RecordAction.Detail))
+		.addTraillerTransaction(TraillerObra.class, setSelector("9OBM", RecordAction.TraillerTransaction))
+		//Fonograma
+		.addHeaderTransaction(HeaderFonograma.class, setSelector("0FON", RecordAction.HeaderTransaction))
+		.addMaster(Fonograma.class, setSelector("FON1", RecordAction.Master))
+		.addDetail(TitularesFonograma.class, setSelector("FON2", RecordAction.Detail))
+		.addDetail(InstrumentosFonograma.class, setSelector("FON3", RecordAction.Detail))
+		.addTraillerTransaction(TraillerFonograma.class, setSelector("9FON", RecordAction.TraillerTransaction));
 		
-		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/9QZ0000000001.IMP");
+		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(fluent);
+
+		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/teste_isrc.IMP");
+		
 		
 	}
 

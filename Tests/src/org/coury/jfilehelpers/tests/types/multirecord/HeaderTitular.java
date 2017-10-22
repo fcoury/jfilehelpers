@@ -1,5 +1,5 @@
 /*
- * MasterDetailMultiRecord.java
+ * HeaderTitular.java
  *
  * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
  * 
@@ -17,39 +17,8 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-package org.coury.jfilehelpers.masterdetailmultirecord;
+package org.coury.jfilehelpers.tests.types.multirecord;
 
-import java.util.List;
-import java.util.Map;
-
-
-
-public class MasterDetailMultiRecord {
-
-	private Map<Object, List<?>> masterDetailMultiRecod;
-		
-	public MasterDetailMultiRecord() {	
-		
-	}
-	
-	
-	
-	
-	
-	public Map<?, List<?>> getMasterDetailMultiRecod() {
-		return masterDetailMultiRecod;
-	}
-
-	public void setMasterDetailMultiRecod(Map<Object, List<?>> masterDetailMultiRecod) {
-		this.masterDetailMultiRecod = masterDetailMultiRecod;
-	}	
-	
-	
-	
-	public <T> void addMasterDetailMultiRecord(T master, List<?> details) {
-		masterDetailMultiRecod.put(master, details);
-	}
-	
-	
+public class HeaderTitular {
 
 }

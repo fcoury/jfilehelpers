@@ -21,55 +21,60 @@ package org.coury.jfilehelpers.masterdetailmultirecord;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
+import java.util.NoSuchElementException;
 
 import org.coury.jfilehelpers.core.RecordInfo;
 import org.coury.jfilehelpers.engines.LineInfo;
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 
-import sun.swing.SwingUtilities2.Section;
 
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 
 public class MasterDetailMultiRecordEngine {
 
-	private MasterDetailMultiRecordFluentImplement fluent;
+	private MasterDetailMultiRecordFluent fluent;
+	private Object master;
+	private List<Object> details;
+	Map<Object, List<?>> masterDetailMultiRecod;
 	
-	private RecordActionSelector seletor;
-	
-	public MasterDetailMultiRecordEngine(MasterDetailMultiRecordFluentImplement fluent) {
+	public MasterDetailMultiRecordEngine(MasterDetailMultiRecordFluent fluent) {
 		this.fluent = fluent;
+		masterDetailMultiRecod = new LinkedHashMap<>();
+		details = new ArrayList<>();
 		
 	}
 
-	private List<MasterDetailMultiRecord> readStream(InputStreamReader fileReader) {
+	private Map<Object, List<?>> readStream(InputStreamReader fileReader) {
 		BufferedReader reader = new BufferedReader(fileReader);
 		reader.lines().forEach(line -> {
-			RecordAction action = checkRegisterType(line);
-			System.out.println(action);
+			RecordAction action = RecordAction.Skip;
+			Entry<Class<?>, RecordActionSelector> entry = checkRegisterType(line);
+				if(entry != null){
+					action = entry.getValue().getRecordAction(line);
+				}
+
 			switch (action) {
 			case HeaderFile:
 				break;
 			case HeaderTransaction:
-				startNewRegister(line);
+				startNewRegister(line, entry.getKey());
 				break;
 			case Master:
-				processMaster(line);
+				processMaster(line, entry.getKey());
 				break;
 			case Detail:
-				processDetail(line);
+				processDetail(line, entry.getKey());
 				break;
 			case TraillerTransaction:
-				finallyRegiter(line);
+				finallyRegiter(line, entry.getKey());
 				break;
 			case TraillerFile:
 				break;
@@ -80,44 +85,70 @@ public class MasterDetailMultiRecordEngine {
 			}
 			
 		});
-		return null;
-	}
-
-	
-
-	private void finallyRegiter(String line) {
-		// TODO Auto-generated method stub
 		
+		
+		masterDetailMultiRecod.forEach((master, details) -> {
+			System.out.println( "MASTER:   " + master );
+			details.forEach(action -> System.out.println("DETAIL:  " + action));
+		});
+		
+		return masterDetailMultiRecod;
 	}
 
-	private void startNewRegister(String line) {
-	}
-
-	private void processDetail(String line) {
 	
+
+	private void finallyRegiter(String line, Class<?> clazz) {
+		
+		if(master != null && details.size() > 0) {
+			masterDetailMultiRecod.put(master, details);
+		}
+		
+		master = null;
+		details = new ArrayList<>();
 	}
 
-	private void processMaster(String line) {
+	private void startNewRegister(String line, Class<?> clazz) {
 
 	}
 
-	private RecordAction checkRegisterType(String line) {
-		seletor = fluent.getMapper()
-			  .values()
+	private void processDetail(String line, Class<?> clazz) {
+		try {
+			details.add(parseStrToRecord(clazz, line));
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private void processMaster(String line, Class<?> clazz) {
+		try {
+			master = parseStrToRecord(clazz, line);
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private Entry<Class<?>, RecordActionSelector> checkRegisterType(String line) {
+		try {
+		return	fluent.getMapper()
+			  .entrySet()
 			  .stream()
-			  .filter(action -> action.getRecordAction(line) != RecordAction.Skip)
+			  .filter(action -> action.getValue().getRecordAction(line) != RecordAction.Skip)
 			  .findFirst()
-			  .orElse(null);
-		if(seletor == null)
-			return RecordAction.Skip;
-		return seletor.getRecordAction(line);
+			  .get();
+		} catch (NoSuchElementException e) {
+			return null;
+		}
+	
 	}
 	
 
 
 
-	public List<MasterDetailMultiRecord> readFile(String fileName) throws IOException {
-		List<MasterDetailMultiRecord> result;
+	public Map<Object, List<?>> readFile(String fileName) throws IOException {
+		Map<Object, List<?>> result;
 		FileReader fr = null;
 		try {
 			fr = new FileReader(new File(fileName));
@@ -132,12 +163,12 @@ public class MasterDetailMultiRecordEngine {
 	
 	
 
-	public Object parseStrToRecord(Class<? extends Serializable> clazz, String text)
+	public <T> T parseStrToRecord(Class<T> clazz, String text)
 			throws InstantiationException, IllegalAccessException {
-		return new RecordInfo<>(clazz).strToRecord(new LineInfo(text));
+		return new RecordInfo<T>(clazz).strToRecord(new LineInfo(text));
 	}
 
-	public <T extends Serializable> String parseRecordToStr(T record, Class<T> clazz)
+	public <T> String parseRecordToStr(T record, Class<T> clazz)
 			throws IllegalArgumentException, IllegalAccessException {
 		return new RecordInfo<T>(clazz).recordToStr(record);
 	}

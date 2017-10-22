@@ -19,6 +19,8 @@
  */
 package org.coury.jfilehelpers.masterdetailmultirecord;
 
+import java.util.Map;
+
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 
 public interface MasterDetailMultiRecordFluent {
@@ -29,7 +31,8 @@ public interface MasterDetailMultiRecordFluent {
 	public <T> MasterDetailMultiRecordFluent addDetail(Class<T> clazz,RecordActionSelector action);
 	public <T> MasterDetailMultiRecordFluent addTraillerTransaction(Class<T> clazz,RecordActionSelector action);
 	public <T> MasterDetailMultiRecordFluent addTraillerFile(Class<T> clazz,RecordActionSelector action);
-	
+	public Map<Class<?>, RecordActionSelector> getMapper();
+	public void setMapper(Map<Class<?>, RecordActionSelector> mapper);
 	
 	
 }
