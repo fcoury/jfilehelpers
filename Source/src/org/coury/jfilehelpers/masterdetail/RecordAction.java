@@ -1,7 +1,7 @@
 /*
  * RecordAction.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,5 +20,5 @@
 package org.coury.jfilehelpers.masterdetail;
 
 public enum RecordAction {
-	Skip, Master, Detail;
+	HeaderFile,HeaderTransaction, Skip, Master, Detail, TraillerTransaction,TraillerFile;
 }

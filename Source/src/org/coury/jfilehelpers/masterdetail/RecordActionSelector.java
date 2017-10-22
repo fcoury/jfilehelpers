@@ -1,7 +1,7 @@
 /*
  * MasterDetailSelecter.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,6 +19,17 @@
  */
 package org.coury.jfilehelpers.masterdetail;
 
-public interface MasterDetailSelector {
-	public RecordAction getRecordAction(String recordString);
+public interface RecordActionSelector {
+	public  RecordAction getRecordAction(String recordString);
+
+	default RecordActionSelector setSelector(String token) {
+		return new RecordActionSelector() {
+			@Override
+			public RecordAction getRecordAction(String recordString) {
+				if(recordString.contains(token))
+				return RecordAction.Master;
+			return RecordAction.Skip;
+			}
+		};
+	}
 }

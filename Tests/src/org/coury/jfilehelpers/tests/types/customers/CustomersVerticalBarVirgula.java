@@ -22,8 +22,8 @@ package org.coury.jfilehelpers.tests.types.customers;
 import org.coury.jfilehelpers.annotations.DelimitedRecord;
 import org.coury.jfilehelpers.interfaces.ComparableRecord;
 
-@DelimitedRecord("|")
-public class CustomersVerticalBar implements ComparableRecord<CustomersVerticalBar> {
+@DelimitedRecord(";")
+public class CustomersVerticalBarVirgula implements ComparableRecord<CustomersVerticalBarVirgula> {
 	
 	public String customerID;
 	public String companyName;
@@ -34,11 +34,21 @@ public class CustomersVerticalBar implements ComparableRecord<CustomersVerticalB
 	public String country;
 
 	@Override
-	public boolean equalsRecord(CustomersVerticalBar record) {
+	public boolean equalsRecord(CustomersVerticalBarVirgula record) {
 		if (this.customerID == null) {
 			return false;
 		}
 		return this.customerID.equals(record);
 	}
+
+	@Override
+	public String toString() {
+		return "CustomersVerticalBarVirgula [customerID=" + customerID + ", companyName=" + companyName
+				+ ", contactName=" + contactName + ", contactTitle=" + contactTitle + ", address=" + address + ", city="
+				+ city + ", country=" + country + "]";
+	}
+	
+	
+	
 
 }
