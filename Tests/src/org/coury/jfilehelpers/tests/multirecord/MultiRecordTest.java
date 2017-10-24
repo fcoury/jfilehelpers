@@ -41,8 +41,10 @@ public class MultiRecordTest extends TestCase {
 	public void testMultiRecordRead() throws IOException {
 
 		
-		Class<?>[] multirecod = new Class<?>[] {TitularHelper.class, 
-												 ObraMusicalHelper.class};	
+		List<Class<?>> multirecod = new ArrayList<>();
+		multirecod.add(TitularHelper.class);
+		multirecod.add(ObraMusicalHelper.class);
+		
 				
 		selector = new HashMap<>();
 		selector.put(ObraMusicalHelper.class, "OBM1");

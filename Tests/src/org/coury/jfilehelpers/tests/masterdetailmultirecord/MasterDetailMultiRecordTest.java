@@ -21,6 +21,9 @@ package org.coury.jfilehelpers.tests.masterdetailmultirecord;
 
 
 
+import java.util.List;
+import java.util.Map;
+
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetailmultirecord.MasterDetailMultiRecordEngine;
@@ -71,9 +74,8 @@ public class MasterDetailMultiRecordTest extends TestCase {
 		.addTraillerTransaction(TraillerFonograma.class, setSelector("9FON", RecordAction.TraillerTransaction));
 		
 		MasterDetailMultiRecordEngine engine = new MasterDetailMultiRecordEngine(fluent);
-
-		engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/teste_isrc.IMP");
-		
+		Map<Object, List<?>> result = engine.readFile(System.getProperty("user.dir") + "/Resources/test/Good/teste_isrc.IMP");
+		engine.writeFile(System.getProperty("user.dir") + "/Resources/test/Good/masterdetailmultirecord.txt", result, 1);
 		
 	}
 

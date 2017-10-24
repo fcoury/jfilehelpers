@@ -37,13 +37,13 @@ import org.coury.jfilehelpers.helpers.StringHelper;
 public class MultiRecordEngine {
 
 	
-	private Class<?>[] params;
+	private List<Class<?>> params;
 	private Map<Class<?>, String> selector;
 	private List<Object> multiRecordList;
 	private LineInfo lineInfo;
 	
-	public MultiRecordEngine(Class<?>[] params, Map<Class<?>, String> selector) {
-		this.setParams(params);
+	public MultiRecordEngine(List<Class<?>> params, Map<Class<?>, String> selector) {
+		this.params  = params;
 		this.setSelector(selector);
 		multiRecordList = new ArrayList<>();
 	}
@@ -138,13 +138,6 @@ public class MultiRecordEngine {
 	
 	
 
-	public Class<?>[] getParams() {
-		return params;
-	}
-
-	public void setParams(Class<?>[] params) {
-		this.params = params;
-	}
 
 
 
