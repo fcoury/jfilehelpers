@@ -183,7 +183,7 @@ public final class RecordInfo<T> {
 	 * @throws IllegalArgumentException
 	 * @throws IllegalAccessException
 	 */
-	public String recordToStr(T record) throws IllegalArgumentException, IllegalAccessException {
+	public <T> String recordToStr(T record) throws IllegalArgumentException, IllegalAccessException {
 		StringBuffer sb = new StringBuffer(this.sizeHint);
 		
 		Object[] values = new Object[fieldCount];
@@ -216,6 +216,12 @@ public final class RecordInfo<T> {
 			Object parameter = recordClass.getEnclosingClass().newInstance();
 			return recordConstructor.newInstance(parameter);
 		}
+	}
+	
+	
+	
+	public T convertObjectToGenertics(Object o) {
+		return (T)o;
 	}
 		
 	/**

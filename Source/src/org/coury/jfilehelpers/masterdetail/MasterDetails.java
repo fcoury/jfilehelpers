@@ -1,7 +1,7 @@
 /*
  * MasterDetails.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@ import java.util.List;
 public class MasterDetails<MT, DT> {
 	private List<DT> details;
 	private MT master;
+	private DT detail;
 	
 	public MasterDetails() {
 		details = new ArrayList<DT>();
@@ -38,7 +39,8 @@ public class MasterDetails<MT, DT> {
 	public List<DT> getDetails() {
 		return details;
 	}
-
+	
+	
 	public void addDetails(List<DT> details) { 
 		if (this.details == null) {
 			this.details = new ArrayList<DT>();
@@ -57,4 +59,14 @@ public class MasterDetails<MT, DT> {
 	public void setMaster(MT master) {
 		this.master = master;
 	}
+
+	public DT getDetail() {
+		return detail;
+	}
+
+	public void setDetail(DT detail) {
+		this.detail = detail;
+	}
+	
+
 }

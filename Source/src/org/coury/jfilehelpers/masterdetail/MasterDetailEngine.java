@@ -51,9 +51,9 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 	@SuppressWarnings("unused")
 	private Class<MT> masterRecordClass;
 	private final RecordInfo<MT> masterInfo;
-	private final MasterDetailSelector recordSelector;
+	private final RecordActionSelector recordSelector;
 
-	public MasterDetailEngine(Class<MT> masterRecordClass, Class<DT> detailRecordClass, MasterDetailSelector recordSelector) {
+	public MasterDetailEngine(Class<MT> masterRecordClass, Class<DT> detailRecordClass, RecordActionSelector recordSelector) {
 		super(detailRecordClass);
 		this.masterRecordClass = masterRecordClass;
 		this.masterInfo = new RecordInfo<MT>(masterRecordClass);
@@ -65,8 +65,7 @@ public class MasterDetailEngine<MT, DT> extends EngineBase<DT> {
 		this.masterInfo = new RecordInfo<MT>(masterRecordClass);
 		final CommonInternalSelector sel = new CommonInternalSelector(action, selector, masterInfo.isIgnoreEmptyLines() || recordInfo.isIgnoreEmptyLines());
 		
-		this.recordSelector = new MasterDetailSelector() {
-
+		this.recordSelector = new RecordActionSelector() {
 			@Override
 			public RecordAction getRecordAction(String recordString) {
 				return sel.getCommonSelectorMethod(recordString);			

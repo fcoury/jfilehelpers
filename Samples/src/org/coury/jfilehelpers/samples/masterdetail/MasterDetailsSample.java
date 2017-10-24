@@ -1,7 +1,7 @@
 /*
  * MasterDetailsSample.java
  *
- * Copyright (C) 2007 Felipe Gonçalves Coury <felipe.coury@gmail.com>
+ * Copyright (C) 2007 Felipe Gonï¿½alves Coury <felipe.coury@gmail.com>
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -25,13 +25,13 @@ import java.util.List;
 
 import org.coury.jfilehelpers.annotations.DelimitedRecord;
 import org.coury.jfilehelpers.masterdetail.MasterDetailEngine;
-import org.coury.jfilehelpers.masterdetail.MasterDetailSelector;
+import org.coury.jfilehelpers.masterdetail.RecordActionSelector;
 import org.coury.jfilehelpers.masterdetail.MasterDetails;
 import org.coury.jfilehelpers.masterdetail.RecordAction;
 
 public class MasterDetailsSample {
 	public static void main(String[] args) throws IOException {
-		MasterDetailEngine<Order, Item> engine = new MasterDetailEngine<Order, Item>(Order.class, Item.class, new MasterDetailSelector() {
+		MasterDetailEngine<Order, Item> engine = new MasterDetailEngine<Order, Item>(Order.class, Item.class, new RecordActionSelector() {
 
 			@Override
 			public RecordAction getRecordAction(String recordString) {
