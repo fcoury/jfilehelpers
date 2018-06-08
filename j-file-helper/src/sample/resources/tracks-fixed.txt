@@ -1,0 +1,5 @@
+01Laura Pausini  La Solitudine  La Solitudine       Pop       Arista         1990
+02Laura Pausini  La Solitudine  Se Fue              Pop       Arista         1990
+03Laura Pausini  La Solitudine  La Gente            Pop       Arista         1990
+04Dixie Chicks   Fly            Cowboy Take Me Away Pop       Arista         03
+05Dixie Chicks   Fly            Cold Day in July    Pop       Arista         03
