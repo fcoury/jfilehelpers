@@ -1,6 +1,18 @@
-bin
+target/
+.project
+.classpath
 .settings
+.idea/
+*.iml
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+.project
+.classpath
+.settings
+target
+bin
 .DS_Store
-TEST-*.txt
-TESTS-TestSuites.xml
-dist
