@@ -1,8 +1,0 @@
-IGNORED LINE
-// COMMENT HERE
-Felipe Coury|12
-// COMMENT THERE
-Ana Maria|8
-Anderson Polga|32
-// SOMETHING IS HERE
-IGNORED LINE
