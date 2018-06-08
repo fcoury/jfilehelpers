@@ -17,12 +17,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jmock</groupId>
-      <artifactId>jmock-junit4</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>	
     </dependency>
@@ -30,13 +24,11 @@
     <dependency>
     	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-lang3</artifactId>
-    	<version>3.3.2</version>
     </dependency>
     
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
-      <version>1.7.25</version>
     </dependency>
     
   </dependencies>

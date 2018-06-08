@@ -29,6 +29,7 @@
 
 		<!-- Versões de jars -->
 		<version.commons-logging.jar>1.1.1</version.commons-logging.jar>
+		<version.commons-lang>3.7</version.commons-lang>
 		<version.jmock.jar>2.5.1</version.jmock.jar>
 
 		<!-- Formato que é mostrada a data e hora do último build -->
@@ -85,27 +86,28 @@
 			<name>SpringSource Repository</name>
 			<url>http://repo.springsource.org/release</url>
 		</repository>
-
 	</repositories>
 
 	<dependencyManagement>
-
 		<dependencies>
-			<dependency>
-				<groupId>org.jmock</groupId>
-				<artifactId>jmock-junit4</artifactId>
-				<version>${version.jmock.jar}</version>
-				<scope>test</scope>
-			</dependency>
-
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>${version.commons-logging.jar}</version>
 			</dependency>
 
-		</dependencies>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${version.commons-lang}</version>
+			</dependency>
 
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.7.25</version>
+			</dependency>
+		</dependencies>
 	</dependencyManagement>
 
 	<reporting>
