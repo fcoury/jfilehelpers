@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.ps</groupId>
+	<artifactId>j-file-helper-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+
+	<name>${project.organization.name}: ${project.artifactId}</name>
+	<url>http://www.ps.org/j-file-helper</url>
+	<inceptionYear>2018</inceptionYear>
+
+	<organization>
+		<name>ORG PS</name>
+		<url>http://www.ps.org</url>
+	</organization>
+
+	<properties>
+		<!-- Versões do plugin -->
+		<version.compiler.plugin>2.1</version.compiler.plugin>
+		<version.surefire.plugin>2.4.3</version.surefire.plugin>
+		<version.resources.plugin>2.4.3</version.resources.plugin>
+		<version.javadoc.plugin>2.6.1</version.javadoc.plugin>
+		<version.versions.plugin>1.2</version.versions.plugin>
+
+		<!-- Versões de jars -->
+		<version.commons-logging.jar>1.1.1</version.commons-logging.jar>
+		<version.commons-lang>3.7</version.commons-lang>
+		<version.jmock.jar>2.5.1</version.jmock.jar>
+
+		<!-- Formato que é mostrada a data e hora do último build -->
+		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+
+		<!-- Nomes dos artefatos -->
+		<build.snapshot.final.name>${project.artifactId}_${project.version}_${maven.build.timestamp}</build.snapshot.final.name>
+		<build.release.final.name>${project.artifactId}_${project.version}</build.release.final.name>
+
+		<!-- Versão do java -->
+		<java.source.version>1.8</java.source.version>
+		<java.target.version>1.8</java.target.version>
+
+	</properties>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>central</id>
+			<name>Maven Plugin Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+	<repositories>
+		<repository>
+			<id>apache.snapshots</id>
+			<name>ASF Maven 2 Snapshot</name>
+			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
+		</repository>
+
+		<repository>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<layout>default</layout>
+			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>springsource-repo</id>
+			<name>SpringSource Repository</name>
+			<url>http://repo.springsource.org/release</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging</artifactId>
+				<version>${version.commons-logging.jar}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${version.commons-lang}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.7.25</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${version.javadoc.plugin}</version>
+				<inherited>false</inherited>
+				<configuration>
+					<aggregate>true</aggregate>
+					<breakiterator>true</breakiterator>
+					<charset>UTF-8</charset>
+					<docencoding>UTF-8</docencoding>
+					<encoding>UTF-8</encoding>
+					<windowtitle>${project.name} ${project.version} API Documentation</windowtitle>
+					<doctitle>${project.name} ${project.version} API Documentation</doctitle>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>${version.versions.plugin}</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>dependency-updates-report</report>
+							<report>plugin-updates-report</report>
+							<report>property-updates-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<build>
+		<finalName>${build.snapshot.final.name}</finalName>
+
+		<plugins>
+			<!-- Setando a versão do java para compilação -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${version.compiler.plugin}</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>${java.source.version}</source>
+					<target>${java.target.version}</target>
+					<debug>true</debug>
+					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+
+			<!-- Alterando o encoding do resources filtering para UTF-8 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${version.resources.plugin}</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin de testes unitarios -->
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${version.surefire.plugin}</version>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<profiles>
+		<profile>
+			<id>release-profile</id>
+
+			<activation>
+				<property>
+					<name>release</name>
+				</property>
+			</activation>
+
+			<build>
+				<finalName>${build.release.final.name}</finalName>
+
+				<plugins>
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>3.0.1</version>
+						<configuration>
+							<excludePackageNames>org.ps.java.file.helper.samples.*</excludePackageNames>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<inherited>true</inherited>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>2.6</version>
+						<configuration>
+							<updateReleaseInfo>true</updateReleaseInfo>
+						</configuration>
+					</plugin>
+				</plugins>
+
+			</build>
+		</profile>
+	</profiles>
+
+	<modules>
+		<module>j-file-helper</module>
+	</modules>
+</project>
